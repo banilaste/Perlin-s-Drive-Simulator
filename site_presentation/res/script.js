@@ -98,6 +98,3 @@ function init() {
 	"use strict";
 	init();
 }());
-
-//git remote add origin https://github.com/banilaste/Perlin-s-Drive-Simulator.git
-//git push -u origin master

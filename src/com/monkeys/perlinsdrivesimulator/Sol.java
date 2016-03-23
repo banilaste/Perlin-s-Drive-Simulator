@@ -1,3 +1,5 @@
+package com.monkeys.perlinsdrivesimulator;
+
 import processing.core.PApplet;
 
 public class Sol {

@@ -1,13 +1,19 @@
+package com.monkeys.perlinsdrivesimulator;
+
+import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection;
+import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RequestType;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
 
 public class Voiture {
-	private PVector speed , position;
-	private int width , height ;
-	private float angle ;
-	private Roue roue[];
-
+	protected PVector speed , position;
+	protected int width , height ;
+	protected float angle ;
+	protected Roue roue[];
+	private boolean multiplayerUpdate = false;
+	
 	public Voiture (PApplet p) {
 		speed = new PVector (0, 0);
 		position = new PVector ();
@@ -49,6 +55,12 @@ public class Voiture {
 		speed.y = p.constrain(speed.y, -5, 5);
 
 		position.add(speed);
+		
+		// Si la mise à jour multijoueur est activée, on envoie une
+		// MaJ toutes les 4 frames
+		if (multiplayerUpdate && p.frameCount % 4 == 0) {
+			sendPositionUpdate(p.multiplayer);
+		}
 	}
 	
 	public void draw (PApplet p){
@@ -76,5 +88,16 @@ public class Voiture {
 	// Getter
 	public PVector getPosition() {
 		return position;
+	}
+
+	public void enableMultiplayerUpdate() {
+		multiplayerUpdate = true;
+	}
+	
+	public void sendPositionUpdate(RemoteConnection connection) {
+		// On envoie la vitesse également pour permettre de donner un semblant de fluidité aux mises à jour
+		connection.send(RequestType.POSITION, 0,
+			position.x + " " + position.y + " " + speed.x + " " + speed.y
+		);
 	}
 }

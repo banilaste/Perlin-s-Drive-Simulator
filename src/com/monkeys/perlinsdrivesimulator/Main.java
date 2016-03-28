@@ -13,7 +13,7 @@ public class Main extends PApplet {
 	Voiture voiture;
 	RemoteConnection multiplayer;
 	
-	boolean multiplayerEnabled = true;
+	boolean multiplayerEnabled = false;
 	
 	public void settings() {
 		size(800, 600);
@@ -42,7 +42,7 @@ public class Main extends PApplet {
 		background(0);
 		voiture.update(this);
 		
-		translate(-voiture.getPosition().x + width * 3 / 10, -voiture.getPosition().y + height / 2);
+		translate(-voiture.getPosition().x + width * 3/10, -voiture.getPosition().y + height / 2);
 		
 		voiture.draw(this);
 		sol.draw(this);

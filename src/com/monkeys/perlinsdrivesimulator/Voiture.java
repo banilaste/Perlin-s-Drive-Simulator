@@ -11,7 +11,7 @@ public class Voiture {
 	protected PVector speed , position;
 	protected int width , height ;
 	protected float angle ;
-	protected Roue roue[];
+	protected Roue roues[];
 	private boolean multiplayerUpdate = false;
 	
 	public Voiture (PApplet p) {
@@ -20,9 +20,9 @@ public class Voiture {
 		width = 60 ;
 		height = 30;
 
-		roue = new Roue[] {
-			new Roue(),
-			new Roue()
+		roues = new Roue[] {
+			new Roue(RelativePosition.LEFT, this),
+			new Roue(RelativePosition.RIGHT, this)
 		};	
 	}
 	
@@ -47,10 +47,11 @@ public class Voiture {
 			speed.y += 1;
 		}
 		
-		// gravité
+		// Gravité
 		speed.y += 0.2;
+		speed.x *= 0.9;
 		
-		//limite de vitesse
+		// Limite de vitesse
 		speed.x = p.constrain(speed.x, -5, 5);
 		speed.y = p.constrain(speed.y, -5, 5);
 
@@ -61,13 +62,17 @@ public class Voiture {
 		if (multiplayerUpdate && p.frameCount % 4 == 0) {
 			sendPositionUpdate(p.multiplayer);
 		}
+		
+		// Mise à jour de la position des roues
+		roues[0].update(p);
+		roues[1].update(p);
 	}
 	
 	public void draw (PApplet p){
 		p.pushMatrix();
 
 		// Translation vers le centre de la voiture puis rotation
-		p.translate( position.x + width / 2, position.y + height / 2);
+		p.translate(position.x + width / 2, position.y + height / 2);
 		p.rotate(angle);
 
 		// Dessin du joli rectangle
@@ -76,22 +81,16 @@ public class Voiture {
 		p.rect(-width / 2, -height / 2, width , height);
 		
 		// Dessin des roue
-		p.translate(-width / 2, height / 2);
-		roue[0].draw(p);
+		//p.translate(-width / 2, height / 2);
+		roues[0].draw(p);
 		
-		p.translate(width, 0);
-		roue[1].draw(p);
+		//p.translate(width, 0);
+		roues[1].draw(p);
+
+		p.fill(105, 100, 255);
+		p.text(position.x + "/" + position.y, - width / 2, -70);
 		
 		p.popMatrix();
-	}
-
-	// Getter
-	public PVector getPosition() {
-		return position;
-	}
-
-	public void enableMultiplayerUpdate() {
-		multiplayerUpdate = true;
 	}
 	
 	public void sendPositionUpdate(RemoteConnection connection) {
@@ -99,5 +98,26 @@ public class Voiture {
 		connection.send(RequestType.POSITION, 0,
 			position.x + " " + position.y + " " + speed.x + " " + speed.y
 		);
+	}
+
+	// Getters/setters
+	public PVector getPosition() {
+		return position;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public void enableMultiplayerUpdate() {
+		multiplayerUpdate = true;
+	}
+
+	public PVector getSpeed() {
+		return speed;
 	}
 }

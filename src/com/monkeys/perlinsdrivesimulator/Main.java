@@ -12,18 +12,21 @@ public class Main extends PApplet {
 	KeyListener keys;
 	Voiture voiture;
 	RemoteConnection multiplayer;
-	
+
 	boolean multiplayerEnabled = false;
+	
+	private int lastWidth = 0;
 	
 	public void settings() {
 		size(800, 600);
+		lastWidth = 800;
 	}
-	
+
 	public void setup() {
 		sol = new Sol(this);
 		keys = new KeyListener();
 		voiture = new Voiture(this);
-		
+
 		// Création d'un objet multijoueur (si le mode est activé)
 		if (multiplayerEnabled) {
 			try {
@@ -33,20 +36,33 @@ public class Main extends PApplet {
 				multiplayerEnabled = false;
 				return;
 			}
-			
+
 			voiture.enableMultiplayerUpdate();
 		}
+
+		// Redimensionnement autorisé
+		surface.setResizable(true); 
 	}
-	
+
 	public void draw() {
+		
+		if (lastWidth != width) {
+			resize();
+		}
+		
+		lastWidth = width;
+		
+		
 		background(0);
+		text(frameRate, 10, 10);
+		
 		voiture.update(this);
-		
+
 		translate(-voiture.getPosition().x + width * 3/10, -voiture.getPosition().y + height / 2);
-		
+
 		voiture.draw(this);
 		sol.draw(this);
-		
+
 		// Si le mode multijoueur est activé, on dessine aussi les voiture des autres
 		// et on les met à jour
 		if (multiplayerEnabled) {
@@ -57,15 +73,19 @@ public class Main extends PApplet {
 			}
 		}
 	}
-	
+
+	public void resize() {
+		sol.resize(this);
+	}
+
 	public void keyPressed() {
 		keys.onKeyPressed(this);
 	}
-	
+
 	public void keyReleased() {
 		keys.onKeyReleased(this);
 	}
-	
+
 	public static void main(String args[]) {
 		PApplet.main(new String[] {"com.monkeys.perlinsdrivesimulator.Main"});
 	}

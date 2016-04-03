@@ -8,9 +8,9 @@ import processing.core.PConstants;
 import processing.core.PVector;
 
 public class Voiture {
-	protected PVector speed , position;
+	protected PVector speed, position, plannedPosition;
 	protected int width , height ;
-	protected float angle ;
+	protected float angle, rotationSpeed = 0;
 	protected Roue roues[];
 	private boolean multiplayerUpdate = false;
 	
@@ -55,7 +55,15 @@ public class Voiture {
 		speed.x = p.constrain(speed.x, -5, 5);
 		speed.y = p.constrain(speed.y, -5, 5);
 
+		plannedPosition = position.copy().add(speed);
+		
+		// Mise à jour de la position des roues
+		roues[0].update(p);
+		roues[1].update(p);
+		
+		
 		position.add(speed);
+		angle += rotationSpeed;
 		
 		// Si la mise à jour multijoueur est activée, on envoie une
 		// MaJ toutes les 4 frames
@@ -63,9 +71,6 @@ public class Voiture {
 			sendPositionUpdate(p.multiplayer);
 		}
 		
-		// Mise à jour de la position des roues
-		roues[0].update(p);
-		roues[1].update(p);
 	}
 	
 	public void draw (PApplet p){
@@ -105,6 +110,10 @@ public class Voiture {
 		return position;
 	}
 
+	public PVector getPlannedPosition() {
+		return plannedPosition;
+	}
+	
 	public int getWidth() {
 		return width;
 	}

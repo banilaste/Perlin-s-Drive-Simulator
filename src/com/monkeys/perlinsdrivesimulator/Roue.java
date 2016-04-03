@@ -1,5 +1,6 @@
 package com.monkeys.perlinsdrivesimulator;
 
+import com.monkeys.perlinsdrivesimulator.container.CollisionResult;
 import com.monkeys.perlinsdrivesimulator.container.PointsResult;
 
 import processing.core.PApplet;
@@ -13,6 +14,7 @@ public class Roue {
 	private boolean collideWithGroud = false;
 	float [] points;
 	Sol sol;
+	PVector points2[];
 	
 	public Roue(RelativePosition pos, Voiture parent) {
 		diametre = 20;
@@ -22,27 +24,54 @@ public class Roue {
 	
 	public void update(Main p) {
 		// Récupération des points dans la portée du cercle
-		position = relPos.update(parent.position, parent.getWidth(), parent.getHeight());
-		PointsResult points = p.sol.getPointsInRange((int) Math.floor(position.x - diametre / 2), diametre, 1);
+		position = relPos.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.angle);
+		PointsResult points = p.sol.getPointsInRange((int) Math.floor(position.x - diametre / 2), diametre, 2);
+		CollisionResult collision;
+		
+		points2 = new PVector[points.points.length - 1];
+		this.points = points.points;
+		this.sol = p.sol;
 		
 		// Pour chaque deux points, on vérifie si la roue entre en collision
 		for (int index = 0; index < points.points.length - 1; index++) {
 			
-			// Si elle rentre en collision
-			if (Collision.circleSegment(new PVector(p.sol.getIndexX(index + points.index), points.points[index]),
+			collision = Collision.circleSegment(new PVector(p.sol.getIndexX(index + points.index), points.points[index]),
 					new PVector(p.sol.getIndexX(index + points.index + 1), points.points[index + 1]),
-					position, diametre / 2)) {
+					position, diametre / 2);
+			
+			// Si elle rentre en collision
+			if (collision != null) {
 				
 				// ON MET LA COLLISION A TRUE
 				collideWithGroud = true;
 				
-				// TODO: remove
-				parent.getSpeed().y = 0;
+				if (collision.direction > 0) {
+					collision.norm.mult(-1);
+				}
+
+				double angle = PVector.angleBetween(collision.norm, parent.getSpeed());
+				float force = (float) (Math.cos(angle) * parent.speed.mag());
+				PVector gravityCenter = relPos.getGravityCenterLocation(parent.width, parent.height);
+
+				collision.norm.mult(-1).setMag(force * (1 + 0.05f * (diametre - collision.norm.mag()) / collision.norm.mag()));
 				
-				break;
+				
+				parent.speed.add(collision.norm);
+				
+				//parent.rotationSpeed = (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x) / 1000;
+				
+				
+				//break;
+				if (collision.point != null) {
+					points2[index] = collision.point;
+				} else {
+					points2[index] = new PVector(0, 0);
+				}
+			} else {
+				points2[index] = new PVector(0, 0);
+				collideWithGroud = false;
 			}
 			
-			collideWithGroud = false;
 		}
 	}
 	
@@ -52,7 +81,7 @@ public class Roue {
 		p.ellipse(relPos.getRelativeX(parent.getWidth()), relPos.getRelativeY(parent.getHeight()), diametre, diametre);
 		
 		// Affichage d'info de collision
-		/*if (collideWithGroud)
+		if (collideWithGroud)
 			p.fill(0, 255, 0);
 		else
 			p.fill(255, 0, 0);
@@ -60,10 +89,10 @@ public class Roue {
 			p.text("Roue gauche : " + collideWithGroud, - parent.getWidth() / 2, -50);
 		} else if (this.relPos == RelativePosition.RIGHT) {
 			p.text("Roue droite : " + collideWithGroud, - parent.getWidth() / 2, -30);
-		}*/
+		}
 		
 		// Dessin des lignes
-		/*p.strokeWeight(1);
+		p.strokeWeight(1);
 		p.stroke(250, 120, 120);
 		
 		p.pushMatrix();
@@ -75,6 +104,11 @@ public class Roue {
 			p.line(position.x, position.y,
 					(i + x) * sol.pointDistance + sol.offsetX, points[x]);
 		}
-		p.popMatrix();*/
+		
+		/*p.stroke(120, 155, 250);
+		for (int x = 0; x < points2.length; x++) {
+			p.line(points2[x].x, points2[x].y, position.x, position.y);
+		}*/
+		p.popMatrix();
 	}
 }

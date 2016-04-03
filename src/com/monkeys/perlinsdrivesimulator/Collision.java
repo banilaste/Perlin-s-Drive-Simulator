@@ -1,39 +1,46 @@
 package com.monkeys.perlinsdrivesimulator;
 
+import com.monkeys.perlinsdrivesimulator.container.CollisionResult;
+
+import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Collision {
-	public static boolean circleSegment(PVector pointA, PVector pointB, PVector circleCenter, int radius) {
-		PVector ac, ab, pointI;
-		double angle, ai;
-	
-		// Etape 1 : collisions points/cercle
-		if (PVector.sub(pointA, circleCenter).mag() < radius) { // Point A <-> cercle
-			return true;
-		}
-		
-		if (PVector.sub(pointB, circleCenter).mag() < radius) { // Point B <-> cercle
-			return true;
-		}
+	public static CollisionResult circleSegment(PVector pointA, PVector pointB, PVector circleCenter, int radius) {
+		PVector ac, ab, pointI, ai;
+		double angle;
 		
 		// Etape intermédiaire : calcul des vecteurs pour des vérifications futures
 		ac = PVector.sub(circleCenter, pointA);
 		ab = PVector.sub(pointB, pointA);
+		angle = PVector.angleBetween(ac, ab);
 		
-		pointI = ab.copy().setMag(ab.x * ac.x + ab.y * ac.y);
+		ai = ab.copy().mult((float) (Math.cos(angle) * ac.mag() / ab.mag()));
+
+		pointI = PVector.add(ai, pointA);
 		
-		ai = PVector.sub(pointI, pointA).mag();
+		// Etape 1 : collisions points/cercle
+		if (PVector.sub(pointA, circleCenter).mag() < radius) { // Point A <-> cercle
+			return new CollisionResult(PVector.sub(circleCenter, pointI), 1);
+		}
+		
+		if (PVector.sub(pointB, circleCenter).mag() < radius) { // Point B <-> cercle
+			return new CollisionResult(PVector.sub(circleCenter, pointI), 1);
+		}
+		
 		
 		// Etape 2 : portée du segment
-		if (ai < 0 || ai > ab.mag()) {
-			return false;
+		// TODO: fix this !
+		if (ai.mag() > ab.mag() + radius) {
+			return null;
 		}
+
 		
 		// Etape 3 : collision segment/cercle
 		if (PVector.sub(pointI, circleCenter).mag() < radius) {
-			return true;
+			return new CollisionResult(PVector.sub(circleCenter, pointI), 1);
 		}
-		
-		return false;
+
+		return null;
 	}
 }

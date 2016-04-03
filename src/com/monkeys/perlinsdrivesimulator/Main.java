@@ -30,7 +30,7 @@ public class Main extends PApplet {
 		// Création d'un objet multijoueur (si le mode est activé)
 		if (multiplayerEnabled) {
 			try {
-				multiplayer = new RemoteConnection("82.229.128.18", 25565);
+				multiplayer = new RemoteConnection("127.0.0.1", 25565);
 			} catch (IOException e) {
 				e.printStackTrace();
 				multiplayerEnabled = false;
@@ -41,7 +41,7 @@ public class Main extends PApplet {
 		}
 
 		// Redimensionnement autorisé
-		surface.setResizable(true); 
+		surface.setResizable(true);
 	}
 
 	public void draw() {

@@ -9,7 +9,7 @@ import processing.core.PVector;
 
 public class Voiture {
 	protected PVector speed, position, plannedPosition;
-	protected int width , height ;
+	protected int width , height, aaaLOLMDR = 0 ;
 	protected float angle, rotationSpeed = 0;
 	protected Roue roues[];
 	private boolean multiplayerUpdate = false;
@@ -17,7 +17,7 @@ public class Voiture {
 	
 	public Voiture (PApplet p) {
 		speed = new PVector (0, 0);
-		position = new PVector ();
+		position = new PVector (50, -100);
 		width = 60 ;
 		height = 30;
 
@@ -28,6 +28,8 @@ public class Voiture {
 	}
 	
 	public void update (Main p){
+		int collisionCount = 0;
+		
 		// Gauche
 		if (p.keys.left) {
 			speed.x -= 1;
@@ -49,26 +51,30 @@ public class Voiture {
 		}
 		
 		// Gravité
-		speed.y += 0.2;
+		speed.y += 0.05f;
 		
 		// Limite de vitesse
 		speed.x = p.constrain(speed.x, -5, 5);
 		speed.y = p.constrain(speed.y, -5, 5);
-
-		plannedPosition = position.copy().add(speed);
-		//rotationSpeed = 0;
 		
+		plannedPosition = position.copy().add(speed);
+		rotationSpeed = 0;
+		
+		plannedAngle = angle ;
+		aaaLOLMDR = 1 - aaaLOLMDR;
 		// Mise à jour de la position des roues
-		roues[1].update(p);
+		collisionCount += roues[aaaLOLMDR].update(p);
 		
 		plannedPosition = position.copy().add(speed);
-		plannedAngle = angle + rotationSpeed;
 		
-		roues[0].update(p);
+		collisionCount += roues[aaaLOLMDR].update(p);
 		
-		
+		//System.out.println(collisionCount);
 		position.add(speed);
-		angle += rotationSpeed;
+		
+		System.out.println(rotationSpeed);
+		//rotationSpeed = p.constrain(rotationSpeed, -40f, 40f);
+		angle += rotationSpeed / 800;
 		
 		// Si la mise à jour multijoueur est activée, on envoie une
 		// MaJ toutes les 4 frames

@@ -24,7 +24,9 @@ public class Roue {
 		this.parent = parent;
 	}
 	
-	public void update(Main p) {
+	public int update(Main p) {
+		int count = 0;
+		
 		// Récupération des points dans la portée du cercle
 		position = relPos.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.getPlannedAngle());
 		PointsResult points = p.sol.getPointsInRange((int) Math.floor(position.x - diametre / 2), diametre, 2);
@@ -43,7 +45,7 @@ public class Roue {
 			
 			// Si elle rentre en collision
 			if (collision != null) {
-				
+				count ++;
 				// ON MET LA COLLISION A TRUE
 				collideWithGroud = true;
 				
@@ -60,7 +62,7 @@ public class Roue {
 				
 				parent.speed.add(collision.norm);
 				
-				//parent.rotationSpeed = (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x);
+				parent.rotationSpeed += (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x);
 				
 				
 				//break;
@@ -75,6 +77,8 @@ public class Roue {
 			}
 			
 		}
+		
+		return count;
 	}
 	
 	public void draw (PApplet p){
@@ -82,7 +86,7 @@ public class Roue {
 		p.noStroke();
 		p.ellipse(relPos.getRelativeX(parent.getWidth()), relPos.getRelativeY(parent.getHeight()), diametre, diametre);
 		
-		p.stroke(255, 255, 120);
+		/*p.stroke(255, 255, 120);
 		p.line(0, 0, parent.speed.x, parent.speed.y);
 		
 		if (this.force != null) {
@@ -112,12 +116,12 @@ public class Roue {
 		for (int x = 0, i = -2 + (int) (Math.floor(position.x - diametre / 2) - sol.offsetX) / sol.pointDistance; x < points.length; x++) {
 			p.line(position.x, position.y,
 					(i + x) * sol.pointDistance + sol.offsetX, points[x]);
-		}
+		}*/
 		
 		/*p.stroke(120, 155, 250);
 		for (int x = 0; x < points2.length; x++) {
 			p.line(points2[x].x, points2[x].y, position.x, position.y);
 		}*/
-		p.popMatrix();
+		//p.popMatrix();
 	}
 }

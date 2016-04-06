@@ -13,9 +13,9 @@ public class Sol {
 	public int pointDistance, maxPoint, section, offsetX, sectionHeight;
 
 	public Sol(PApplet p) {
-		points = new float[100];
-		points2 = new float[100];
-		pointDistance = 50;
+		points = new float[50];
+		points2 = new float[50];
+		pointDistance = 30;
 		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 2);
 		sectionHeight = 1000; // Hauteur entre le point le plus haut et le plus bas
 		

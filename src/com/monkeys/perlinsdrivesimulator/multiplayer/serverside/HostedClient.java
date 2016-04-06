@@ -7,9 +7,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RequestType;
+
 public class HostedClient implements Runnable {
 	private static ArrayList<HostedClient> clients = new ArrayList<HostedClient>();
 	private static int currentId = 0;
+	private static long seed = (long) Math.random();
 	
 	private HostServer server;
 	private Socket soc;
@@ -39,6 +42,8 @@ public class HostedClient implements Runnable {
 
 	// Fonctionnement du thread
 	public void run() {
+		// Envoie de la seed au client
+		this.send((int) Math.floor(Math.log10(id) + 1) + "" + id + "" + RequestType.SEED.id + "" + seed + "\n");
 		
 		while (true) {
 			try {

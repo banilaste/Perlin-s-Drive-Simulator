@@ -2,12 +2,11 @@ package com.monkeys.perlinsdrivesimulator;
 
 import com.monkeys.perlinsdrivesimulator.container.CollisionResult;
 
-import processing.core.PApplet;
 import processing.core.PVector;
 
 public class Collision {
 	public static CollisionResult circleSegment(PVector pointA, PVector pointB, PVector circleCenter, int radius) {
-		PVector ac, ab, pointI, ai;
+		PVector ac, ab, pointI, ai, ic;
 		double angle;
 		
 		// Etape intermédiaire : calcul des vecteurs pour des vérifications futures
@@ -30,15 +29,15 @@ public class Collision {
 		
 		
 		// Etape 2 : portée du segment
-		// TODO: fix this !
 		if (ai.mag() > ab.mag() + radius) {
 			return null;
 		}
 
+		ic = PVector.sub(circleCenter, pointI);
 		
 		// Etape 3 : collision segment/cercle
-		if (PVector.sub(pointI, circleCenter).mag() < radius) {
-			return new CollisionResult(PVector.sub(circleCenter, pointI), 1);
+		if (ic.mag() < radius) {
+			return new CollisionResult(ic, 1);
 		}
 
 		return null;

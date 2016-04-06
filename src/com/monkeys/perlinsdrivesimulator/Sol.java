@@ -9,12 +9,13 @@ import processing.core.PConstants;
 import processing.core.PVector;
 
 public class Sol {
-	private float points[], points2[];
+	private float firstSection[], secondSection[];
 	public int pointDistance, maxPoint, section, offsetX, sectionHeight;
 
 	public Sol(PApplet p) {
-		points = new float[100];
-		points2 = new float[100];
+		firstSection = new float[100];
+		secondSection = new float[100];
+		
 		pointDistance = 20;
 		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 2);
 		sectionHeight = 1000; // Hauteur entre le point le plus haut et le plus bas
@@ -25,28 +26,70 @@ public class Sol {
 		// Décalage
 		offsetX = 0;
 
-		generate(p, section);
+		generate(p, section, false);
 	}
 
-	public void generate(PApplet p , int section ) {
-		for (int index = 0; index < points.length; index += 1) {
-			points[index] = p.noise((float) ((index + points.length*section ) * 0.02));
-			points2[index] = p.noise((float) ((index + points.length*(section+1)) * 0.02));
+	/**
+	 * Génère une section de la map
+	 * @param p Objet processing
+	 * @param section Numéro de la section à générer
+	 * @param reuse Utilisation des section actuelles ou non?
+	 */
+	public void generate(PApplet p, int section, boolean reuse) {
+		// Si la seconde section est déja générée
+		if (reuse && section - 1 == this.section) {
+			firstSection = secondSection;
+			secondSection = generateSingle(p, section + 1);
+		// Sinon si la première l'est
+		} else if (reuse && section == this.section - 1) {
+			secondSection = firstSection;
+			firstSection = generateSingle(p, section);
+			
+		// Sinon on génère les deux
+		} else {
+			firstSection = generateSingle(p, section);
+			secondSection = generateSingle(p, section + 1);
 		}
 	}
 
+	private float[] generateSingle(PApplet p, int section) {
+		float[] sectionPoints = new float[firstSection.length];
+		
+		for (int index = 0; index < firstSection.length; index += 1) {
+			sectionPoints[index] = p.noise((index + firstSection.length * section) * 0.02f);
+		}
+		
+		return sectionPoints;
+	}
+	
 	public void draw (Main p) {
-		int positionx = (int) (p.voiture.getPosition().x - p.width * 3/10 - offsetX);
-		int PointDepart = positionx / pointDistance;
+		int startX = (int) (p.voiture.getPosition().x - p.width * 3/10 - offsetX),
+			startPoint = startX / pointDistance;
 
-		// Si la première partie de points est dépassée
-		if (PointDepart > points.length){
+		// Si la première partie de points est dépassée  (3 points de marge)
+		if (startPoint > firstSection.length){
 			System.out.println("Swaping to section " + (section + 1));
-			PointDepart -= points.length;
+			
+			startPoint -= firstSection.length;
+			offsetX += firstSection.length * pointDistance;
+			
+			generate(p, section + 1, true);
+			
 			section += 1;
-			offsetX += points.length * pointDistance;
-			generate (p, section);
+			
+		// Si la première partie est trop à droite (3 points de marge)
+		} else if (startPoint < 0) {
+			System.out.println("Swaping to section " + (section - 1));
+			
+			startPoint += firstSection.length;
+			offsetX -= firstSection.length * pointDistance;
+			
+			generate(p, section - 1, true);
+			
+			section -= 1;
 		}
+		
+		
 		
 		p.pushMatrix();
 		p.translate(offsetX, 0);
@@ -59,55 +102,42 @@ public class Sol {
 
 		// On commence à dessiner le sol
 		p.beginShape();
-		p.vertex(positionx , p.height * 2);
-
-		// On dessine une line entre chaque point de la première section
-		if (PointDepart < 0){
-			PointDepart = 0;
-		}
-		for (int index = PApplet.max(0, PointDepart);
-				index < PointDepart + maxPoint && index-points.length < points2.length;
+		p.vertex(startX, p.height * 2);
+		
+		for (int index = PApplet.max(0, startPoint);
+				index < startPoint + maxPoint && index-firstSection.length < secondSection.length;
 				index += 1) {
 
 			// On dessine un point par point affichable
 			p.vertex(this.pointDistance * index, getAbsoluteValueFromIndex(index));
 		}
 
-		p.vertex(p.width + positionx, p.height * 2);
+		p.vertex(p.width + startX, p.height * 2);
 		p.endShape(PConstants.CLOSE);
 		p.popMatrix();
 	};
-
-	
-	public int getOffset() {
-		return offsetX;
-	}
 
 	public int getIndexFromX(float x) {
 		return (int) Math.floor((x - offsetX) / pointDistance);
 	}
 	
 	public void resize(Main p) {
-		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 2);
+		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 3);
 	}
 	
 	private float getAbsoluteValueFromIndex(int index) {
-		if (index < 0 || index >= this.points.length + this.points2.length) {
+		if (index < 0 || index >= this.firstSection.length + this.secondSection.length) {
 			return 0;
 		}
 		
-		if (index < this.points.length) {
-			return this.points[index] * sectionHeight;
+		if (index < this.firstSection.length) {
+			return this.firstSection[index] * sectionHeight;
 			
-		} else if (index < this.points2.length + this.points.length) {
-			return this.points2[index - this.points2.length] * sectionHeight;
+		} else if (index < this.secondSection.length + this.firstSection.length) {
+			return this.secondSection[index - this.secondSection.length] * sectionHeight;
 		}
 		
 		return 0;
-	}
-	
-	private float getAbsoluteValue(float point) {
-		return point * sectionHeight;
 	}
 	
 	public float getIndexX(int index) {
@@ -164,5 +194,14 @@ public class Sol {
 		}
 		
 		return points;
+	}
+
+	
+	public int getOffset() {
+		return offsetX;
+	}
+
+	public int getSection() {
+		return section;
 	}
 }

@@ -8,12 +8,12 @@ import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemotePlayer;
 import processing.core.PApplet;
 
 public class Main extends PApplet {
-	Sol sol;
+	public Sol sol;
 	KeyListener keys;
 	Voiture voiture;
 	RemoteConnection multiplayer;
 
-	boolean multiplayerEnabled = false;
+	boolean multiplayerEnabled = true;
 	
 	private int lastWidth = 0;
 	
@@ -23,6 +23,8 @@ public class Main extends PApplet {
 	}
 
 	public void setup() {
+		surface.setResizable(true);
+		
 		sol = new Sol(this);
 		keys = new KeyListener();
 		voiture = new Voiture(this);
@@ -30,7 +32,7 @@ public class Main extends PApplet {
 		// Création d'un objet multijoueur (si le mode est activé)
 		if (multiplayerEnabled) {
 			try {
-				multiplayer = new RemoteConnection("127.0.0.1", 25565);
+				multiplayer = new RemoteConnection("127.0.0.1", 25565, this);
 			} catch (IOException e) {
 				e.printStackTrace();
 				multiplayerEnabled = false;
@@ -79,10 +81,6 @@ public class Main extends PApplet {
 	}
 
 	public void keyPressed() {
-		if (key == ' ') {
-			frameRate(1);
-		}
-		
 		keys.onKeyPressed(this);
 	}
 

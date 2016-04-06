@@ -42,6 +42,7 @@ public class RemotePlayer extends Voiture {
 		// On met quand même la mise à jour de la position en fonction de la vitesse (en cas
 		// de coupure ca risque d'être drôle)
 		this.position.add(this.speed);
+		this.angle += rotationSpeed;
 	}
 	
 	// Gère la requète recue du serveur
@@ -63,6 +64,8 @@ public class RemotePlayer extends Voiture {
 			this.position.y = Float.parseFloat(parts[1]);
 			this.speed.x = Float.parseFloat(parts[2]);
 			this.speed.y = Float.parseFloat(parts[3]);
+			this.angle = Float.parseFloat(parts[4]);
+			this.rotationSpeed = Float.parseFloat(parts[5]);
 		}
 		
 		// On met à jour le temps de la dernière mise à jour

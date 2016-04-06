@@ -1,9 +1,9 @@
 package com.monkeys.perlinsdrivesimulator.multiplayer.clientside;
 
 public enum RequestType {
-	PING, PONG_ALIVE, PONG_DEAD, POSITION;
+	PING, PONG_ALIVE, PONG_DEAD, POSITION, SEED;
 
-	final int id;
+	public final int id;
 
 	RequestType() {
 		id = ordinal();

@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.monkeys.perlinsdrivesimulator.Main;
+
 public class RemoteConnection implements Runnable {
 	private Map<Integer, RemotePlayer> players;
 	
@@ -17,9 +19,12 @@ public class RemoteConnection implements Runnable {
 	private BufferedReader reader;
 	private PrintWriter writer;
 	
+	private Main main;
+	
 	// Initialisation d'un nouveau client
-	public RemoteConnection (String ip, int port) throws IOException {
+	public RemoteConnection (String ip, int port, Main m) throws IOException {
 		soc = new Socket(ip, port);
+		main = m;
 		
 		players = new HashMap<Integer, RemotePlayer>();
 		
@@ -52,8 +57,13 @@ public class RemoteConnection implements Runnable {
 				data = nextLine.substring(startData + 1);
 				
 				// On envoie ensuite à l'instance locale concernée
-				if (players.containsKey(playerId)) {
+				if (reqType == RequestType.SEED.id) {
+					main.noiseSeed(Long.parseLong(data));
+					main.sol.generate(main, main.sol.getSection(), false);
+					
+				} else if (players.containsKey(playerId)) {
 					players.get(playerId).request(reqType, data);
+					
 				} else {
 					// Request() renvoie l'objet que l'on vient de créer (pas de soucis à se faire ;D)
 					players.put(playerId, new RemotePlayer(this, playerId).request(reqType, data));

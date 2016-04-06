@@ -33,8 +33,8 @@ public class Voiture {
 		}
 
 		// Bas
-		if (p.keys.down) {
-			speed.y += 1;
+		if (p.keys.left) {
+			speed.x -= 1;
 		}
 		
 		// Gravité
@@ -42,17 +42,17 @@ public class Voiture {
 		//speed.x *= 0.9;
 		
 		// Limite de vitesse
-		speed.x = p.constrain(speed.x, -5, 5);
-		speed.y = p.constrain(speed.y, -5, 5);
+		speed.x = PApplet.constrain(speed.x, -5, 5);
+		speed.y = PApplet.constrain(speed.y, -5, 5);
 
 		plannedPosition = position.copy().add(speed);
 		
-		// Mise à jour de la position des roues
+		// Mise à jour de la position des roues (on alterne
+		// entre la roue gauche et droite pour la mise à jour
+		// pour éviter des bugs)
 		alternate = 1 - alternate;
 		roues[alternate].update(p);
 		roues[1 - alternate].update(p);
-		
-		//rotationSpeed = (roues[0].getRotationalForce() + roues[1].getRotationalForce()) / 2;
 		
 		position.add(speed);
 		angle += rotationSpeed / 2;
@@ -79,14 +79,8 @@ public class Voiture {
 		p.rect(-width / 2, -height / 2, width , height);
 		
 		// Dessin des roue
-		//p.translate(-width / 2, height / 2);
 		roues[0].draw(p);
-		
-		//p.translate(width, 0);
 		roues[1].draw(p);
-
-		p.fill(105, 100, 255);
-		p.text(position.x + "/" + position.y, - width / 2, -70);
 		
 		p.popMatrix();
 	}
@@ -94,17 +88,13 @@ public class Voiture {
 	public void sendPositionUpdate(RemoteConnection connection) {
 		// On envoie la vitesse également pour permettre de donner un semblant de fluidité aux mises à jour
 		connection.send(RequestType.POSITION, 0,
-			position.x + " " + position.y + " " + speed.x + " " + speed.y
+			position.x + " " + position.y + " " + speed.x + " " + speed.y + " " + angle + " " + rotationSpeed
 		);
 	}
 
 	// Getters/setters
 	public PVector getPosition() {
 		return position;
-	}
-
-	public PVector getPlannedPosition() {
-		return plannedPosition;
 	}
 	
 	public int getWidth() {
@@ -121,5 +111,9 @@ public class Voiture {
 
 	public PVector getSpeed() {
 		return speed;
+	}
+	
+	public PVector getPlannedPosition() {
+		return plannedPosition;
 	}
 }

@@ -1,6 +1,5 @@
 package com.monkeys.perlinsdrivesimulator;
 
-import processing.core.PConstants;
 import processing.core.PVector;
 
 public enum RelativePosition {

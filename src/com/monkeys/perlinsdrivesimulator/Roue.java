@@ -12,11 +12,10 @@ public class Roue {
 	private PVector position;
 	private Voiture parent;
 	private boolean collideWithGroud = false;
+	private float rotationnalForce = 0;
 	float [] points;
 	Sol sol;
 	PVector points2[];
-	
-	PVector force;
 	
 	public Roue(RelativePosition pos, Voiture parent) {
 		diametre = 20;
@@ -26,7 +25,7 @@ public class Roue {
 	
 	public void update(Main p) {
 		// Récupération des points dans la portée du cercle
-		position = relPos.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.getPlannedAngle());
+		position = relPos.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.angle);
 		PointsResult points = p.sol.getPointsInRange((int) Math.floor(position.x - diametre / 2), diametre, 2);
 		CollisionResult collision;
 		
@@ -47,20 +46,21 @@ public class Roue {
 				// ON MET LA COLLISION A TRUE
 				collideWithGroud = true;
 				
-				if (collision.direction > 0) {
+				if (collision.norm.y > 0) {
 					collision.norm.mult(-1);
 				}
 
-				double angle = PVector.angleBetween(collision.norm, parent.getSpeed());
-				float force = (float) (Math.cos(angle) * parent.speed.mag());
-				PVector gravityCenter = relPos.getGravityCenterLocation(parent.width, parent.height, parent.getPlannedAngle());
-
-				collision.norm.mult(-1).setMag(force * (1 + 0.05f * (diametre / 2 - collision.norm.mag()) / collision.norm.mag()));
-				this.force = collision.norm.copy();
+				float angle = PVector.angleBetween(collision.norm, parent.getSpeed());
+				float force = PApplet.abs(PApplet.cos(angle) * parent.speed.mag());
+				PVector gravityCenter = relPos.getGravityCenterLocation(parent.width, parent.height, parent.angle);
+				
+				
+				collision.norm.setMag(force * (1 + 0.01f * (diametre - collision.norm.mag()) / collision.norm.mag()));
+				
 				
 				parent.speed.add(collision.norm);
-				
-				//parent.rotationSpeed = (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x);
+				parent.rotationSpeed += (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x) / 3000;
+
 				
 				
 				//break;
@@ -82,13 +82,6 @@ public class Roue {
 		p.noStroke();
 		p.ellipse(relPos.getRelativeX(parent.getWidth()), relPos.getRelativeY(parent.getHeight()), diametre, diametre);
 		
-		p.stroke(255, 255, 120);
-		p.line(0, 0, parent.speed.x, parent.speed.y);
-		
-		if (this.force != null) {
-			p.stroke(255, 120, 120);
-			p.line(0, 0, force.x, force.y);
-		}
 		// Affichage d'info de collision
 		if (collideWithGroud)
 			p.fill(0, 255, 0);
@@ -119,5 +112,9 @@ public class Roue {
 			p.line(points2[x].x, points2[x].y, position.x, position.y);
 		}*/
 		p.popMatrix();
+	}
+	
+	public float getRotationalForce() {
+		return rotationnalForce;
 	}
 }

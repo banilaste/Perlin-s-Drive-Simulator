@@ -15,7 +15,7 @@ public class Sol {
 	public Sol(PApplet p) {
 		points = new float[100];
 		points2 = new float[100];
-		pointDistance = 50;
+		pointDistance = 20;
 		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 2);
 		sectionHeight = 1000; // Hauteur entre le point le plus haut et le plus bas
 		
@@ -53,8 +53,8 @@ public class Sol {
 		
 		// Styles
 		p.stroke(255, 0, 255);
-		p.noFill();
-		//p.fill(200, 0, 200);
+		//p.noFill();
+		p.fill(200, 0, 200);
 		p.strokeWeight(3);
 
 		// On commence à dessiner le sol

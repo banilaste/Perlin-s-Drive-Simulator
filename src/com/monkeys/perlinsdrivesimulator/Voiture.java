@@ -9,11 +9,10 @@ import processing.core.PVector;
 
 public class Voiture {
 	protected PVector speed, position, plannedPosition;
-	protected int width , height ;
+	protected int width , height, alternate = 0;
 	protected float angle, rotationSpeed = 0;
 	protected Roue roues[];
 	private boolean multiplayerUpdate = false;
-	private float plannedAngle;
 	
 	public Voiture (PApplet p) {
 		speed = new PVector (0, 0);
@@ -28,19 +27,9 @@ public class Voiture {
 	}
 	
 	public void update (Main p){
-		// Gauche
-		if (p.keys.left) {
-			speed.x -= 1;
-		}
-
 		// Droite
 		if (p.keys.right) {
 			speed.x += 1;
-		}
-
-		// Haut
-		if (p.keys.up) {
-			speed.y -= 1;
 		}
 
 		// Bas
@@ -50,25 +39,24 @@ public class Voiture {
 		
 		// Gravité
 		speed.y += 0.2;
+		//speed.x *= 0.9;
 		
 		// Limite de vitesse
 		speed.x = p.constrain(speed.x, -5, 5);
 		speed.y = p.constrain(speed.y, -5, 5);
 
 		plannedPosition = position.copy().add(speed);
-		//rotationSpeed = 0;
 		
 		// Mise à jour de la position des roues
-		roues[1].update(p);
+		alternate = 1 - alternate;
+		roues[alternate].update(p);
+		roues[1 - alternate].update(p);
 		
-		plannedPosition = position.copy().add(speed);
-		plannedAngle = angle + rotationSpeed;
-		
-		roues[0].update(p);
-		
+		//rotationSpeed = (roues[0].getRotationalForce() + roues[1].getRotationalForce()) / 2;
 		
 		position.add(speed);
-		angle += rotationSpeed;
+		angle += rotationSpeed / 2;
+		rotationSpeed *= 0.95;
 		
 		// Si la mise à jour multijoueur est activée, on envoie une
 		// MaJ toutes les 4 frames
@@ -117,10 +105,6 @@ public class Voiture {
 
 	public PVector getPlannedPosition() {
 		return plannedPosition;
-	}
-	
-	public float getPlannedAngle() {
-		return plannedAngle;
 	}
 	
 	public int getWidth() {

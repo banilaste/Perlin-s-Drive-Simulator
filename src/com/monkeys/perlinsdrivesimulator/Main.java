@@ -79,6 +79,10 @@ public class Main extends PApplet {
 	}
 
 	public void keyPressed() {
+		if (key == ' ') {
+			frameRate(1);
+		}
+		
 		keys.onKeyPressed(this);
 	}
 

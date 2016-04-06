@@ -13,6 +13,7 @@ public class Voiture {
 	protected float angle, rotationSpeed = 0;
 	protected Roue roues[];
 	private boolean multiplayerUpdate = false;
+	private float plannedAngle;
 	
 	public Voiture (PApplet p) {
 		speed = new PVector (0, 0);
@@ -49,17 +50,21 @@ public class Voiture {
 		
 		// Gravité
 		speed.y += 0.2;
-		speed.x *= 0.9;
 		
 		// Limite de vitesse
 		speed.x = p.constrain(speed.x, -5, 5);
 		speed.y = p.constrain(speed.y, -5, 5);
 
 		plannedPosition = position.copy().add(speed);
+		//rotationSpeed = 0;
 		
 		// Mise à jour de la position des roues
-		roues[0].update(p);
 		roues[1].update(p);
+		
+		plannedPosition = position.copy().add(speed);
+		plannedAngle = angle + rotationSpeed;
+		
+		roues[0].update(p);
 		
 		
 		position.add(speed);
@@ -112,6 +117,10 @@ public class Voiture {
 
 	public PVector getPlannedPosition() {
 		return plannedPosition;
+	}
+	
+	public float getPlannedAngle() {
+		return plannedAngle;
 	}
 	
 	public int getWidth() {

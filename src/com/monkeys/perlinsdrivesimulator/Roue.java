@@ -16,6 +16,8 @@ public class Roue {
 	Sol sol;
 	PVector points2[];
 	
+	PVector force;
+	
 	public Roue(RelativePosition pos, Voiture parent) {
 		diametre = 20;
 		relPos = pos;
@@ -24,7 +26,7 @@ public class Roue {
 	
 	public void update(Main p) {
 		// Récupération des points dans la portée du cercle
-		position = relPos.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.angle);
+		position = relPos.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.getPlannedAngle());
 		PointsResult points = p.sol.getPointsInRange((int) Math.floor(position.x - diametre / 2), diametre, 2);
 		CollisionResult collision;
 		
@@ -51,14 +53,14 @@ public class Roue {
 
 				double angle = PVector.angleBetween(collision.norm, parent.getSpeed());
 				float force = (float) (Math.cos(angle) * parent.speed.mag());
-				PVector gravityCenter = relPos.getGravityCenterLocation(parent.width, parent.height);
+				PVector gravityCenter = relPos.getGravityCenterLocation(parent.width, parent.height, parent.getPlannedAngle());
 
-				collision.norm.mult(-1).setMag(force * (1 + 0.05f * (diametre - collision.norm.mag()) / collision.norm.mag()));
-				
+				collision.norm.mult(-1).setMag(force * (1 + 0.05f * (diametre / 2 - collision.norm.mag()) / collision.norm.mag()));
+				this.force = collision.norm.copy();
 				
 				parent.speed.add(collision.norm);
 				
-				//parent.rotationSpeed = (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x) / 1000;
+				//parent.rotationSpeed = (gravityCenter.x * collision.norm.y - gravityCenter.y * collision.norm.x);
 				
 				
 				//break;
@@ -80,6 +82,13 @@ public class Roue {
 		p.noStroke();
 		p.ellipse(relPos.getRelativeX(parent.getWidth()), relPos.getRelativeY(parent.getHeight()), diametre, diametre);
 		
+		p.stroke(255, 255, 120);
+		p.line(0, 0, parent.speed.x, parent.speed.y);
+		
+		if (this.force != null) {
+			p.stroke(255, 120, 120);
+			p.line(0, 0, force.x, force.y);
+		}
 		// Affichage d'info de collision
 		if (collideWithGroud)
 			p.fill(0, 255, 0);

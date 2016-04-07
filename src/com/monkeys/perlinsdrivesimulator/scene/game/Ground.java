@@ -1,23 +1,24 @@
-package com.monkeys.perlinsdrivesimulator;
+package com.monkeys.perlinsdrivesimulator.scene.game;
 
 import java.awt.Point;
 
+import com.monkeys.perlinsdrivesimulator.Main;
 import com.monkeys.perlinsdrivesimulator.container.PointsResult;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
 
-public class Sol {
+public class Ground {
 	private float firstSection[], secondSection[];
 	public int pointDistance, maxPoint, section, offsetX, sectionHeight;
 
-	public Sol(PApplet p) {
+	public Ground(PApplet p) {
 		firstSection = new float[100];
 		secondSection = new float[100];
 		
 		pointDistance = 20;
-		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 2);
+		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 3);
 		sectionHeight = 1000; // Hauteur entre le point le plus haut et le plus bas
 		
 		// Numéro de section
@@ -63,10 +64,10 @@ public class Sol {
 	}
 	
 	public void draw (Main p) {
-		int startX = (int) (p.voiture.getPosition().x - p.width * 3/10 - offsetX),
-			startPoint = startX / pointDistance;
+		int startX = (int) (p.getGame().getPlayer().getPosition().x - p.width * 3/10 - offsetX),
+			startPoint = startX / pointDistance - 1;
 
-		// Si la première partie de points est dépassée  (3 points de marge)
+		// Si la première partie de points est dépassée
 		if (startPoint > firstSection.length){
 			System.out.println("Swaping to section " + (section + 1));
 			
@@ -77,7 +78,7 @@ public class Sol {
 			
 			section += 1;
 			
-		// Si la première partie est trop à droite (3 points de marge)
+		// Si la première partie est trop à droite
 		} else if (startPoint < 0) {
 			System.out.println("Swaping to section " + (section - 1));
 			

@@ -59,7 +59,7 @@ public class RemoteConnection implements Runnable {
 				// On envoie ensuite à l'instance locale concernée
 				if (reqType == RequestType.SEED.id) {
 					main.noiseSeed(Long.parseLong(data));
-					main.sol.generate(main, main.sol.getSection(), false);
+					main.getGame().getGround().generate(main, main.getGame().getGround().getSection(), false);
 					
 				} else if (players.containsKey(playerId)) {
 					players.get(playerId).request(reqType, data);

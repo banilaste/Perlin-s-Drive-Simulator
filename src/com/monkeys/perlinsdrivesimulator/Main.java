@@ -4,18 +4,21 @@ import java.io.IOException;
 
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection;
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemotePlayer;
+import com.monkeys.perlinsdrivesimulator.scene.Scene;
+import com.monkeys.perlinsdrivesimulator.scene.game.Game;
+import com.monkeys.perlinsdrivesimulator.scene.game.Ground;
+import com.monkeys.perlinsdrivesimulator.scene.game.Player;
 
 import processing.core.PApplet;
 
 public class Main extends PApplet {
-	public Sol sol;
-	KeyListener keys;
-	Voiture voiture;
-	RemoteConnection multiplayer;
-
-	boolean multiplayerEnabled = true;
+	private Scene currentScene;
+	private KeyListener keys;
+	
+	boolean multiplayerEnabled = false;
 	
 	private int lastWidth = 0;
+	private Game game;
 	
 	public void settings() {
 		size(800, 600);
@@ -23,61 +26,34 @@ public class Main extends PApplet {
 	}
 
 	public void setup() {
+		// Redimensionnement
 		surface.setResizable(true);
 		
-		sol = new Sol(this);
+		// Gestion des touches flechées
 		keys = new KeyListener();
-		voiture = new Voiture(this);
-
-		// Création d'un objet multijoueur (si le mode est activé)
-		if (multiplayerEnabled) {
-			try {
-				multiplayer = new RemoteConnection("127.0.0.1", 25565, this);
-			} catch (IOException e) {
-				e.printStackTrace();
-				multiplayerEnabled = false;
-				return;
-			}
-
-			voiture.enableMultiplayerUpdate();
-		}
-
-		// Redimensionnement autorisé
-		surface.setResizable(true);
+		
+		// Création de la scène de jeu
+		game = new Game();
+		game.init(this);
+		
+		// Définition de la scène par défaut
+		currentScene = game;
 	}
 
 	public void draw() {
-		
+		// Gestion du redimensionnement
 		if (lastWidth != width) {
 			resize();
 		}
 		
 		lastWidth = width;
 		
-		
-		background(0);
-		text(frameRate, 10, 10);
-		
-		voiture.update(this);
-
-		translate(-voiture.getPosition().x + width * 3/10, -voiture.getPosition().y + height / 2);
-
-		voiture.draw(this);
-		sol.draw(this);
-
-		// Si le mode multijoueur est activé, on dessine aussi les voiture des autres
-		// et on les met à jour
-		if (multiplayerEnabled) {
-			// On dessine tous les joueurs qu'importe leurs id
-			for (RemotePlayer next : multiplayer.getPlayers().values()) {
-				next.update(this);
-				next.draw(this);
-			}
-		}
+		// Mise à jour et dessin de la scène
+		currentScene.draw(this);
 	}
 
 	public void resize() {
-		sol.resize(this);
+		currentScene.onresize();
 	}
 
 	public void keyPressed() {
@@ -88,6 +64,15 @@ public class Main extends PApplet {
 		keys.onKeyReleased(this);
 	}
 
+	public Game getGame() {
+		return game;
+	}
+
+	public KeyListener getKeyListener() {
+		return keys;
+	}
+	
+	// LE MAIN !
 	public static void main(String args[]) {
 		PApplet.main(new String[] {"com.monkeys.perlinsdrivesimulator.Main"});
 	}

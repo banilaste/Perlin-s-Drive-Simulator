@@ -5,11 +5,11 @@ import java.util.Scanner;
 import java.util.Vector;
 
 import com.monkeys.perlinsdrivesimulator.Main;
-import com.monkeys.perlinsdrivesimulator.Voiture;
+import com.monkeys.perlinsdrivesimulator.scene.game.Player;
 
 import processing.core.PApplet;
 
-public class RemotePlayer extends Voiture {
+public class RemotePlayer extends Player {
 	protected int id;
 	protected long lastUpdateTime, lastPingTime, currentTime;
 	private RemoteConnection connection;

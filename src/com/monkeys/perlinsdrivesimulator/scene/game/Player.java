@@ -1,5 +1,6 @@
-package com.monkeys.perlinsdrivesimulator;
+package com.monkeys.perlinsdrivesimulator.scene.game;
 
+import com.monkeys.perlinsdrivesimulator.Main;
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection;
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RequestType;
 
@@ -7,39 +8,42 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
 
-public class Voiture {
+public class Player {
 	protected PVector speed, position, plannedPosition;
 	protected int width , height, alternate = 0;
 	protected float angle, rotationSpeed = 0;
-	protected Roue roues[];
+	protected Wheel roues[];
 	private boolean multiplayerUpdate = false;
 	
-	public Voiture (PApplet p) {
+	public Player (PApplet p) {
 		speed = new PVector (0, 0);
 		position = new PVector ();
 		width = 60 ;
 		height = 30;
 
-		roues = new Roue[] {
-			new Roue(RelativePosition.LEFT, this),
-			new Roue(RelativePosition.RIGHT, this)
+		roues = new Wheel[] {
+			new Wheel(RelativePosition.LEFT, this),
+			new Wheel(RelativePosition.RIGHT, this)
 		};	
 	}
 	
 	public void update (Main p){
 		// Droite
-		if (p.keys.right) {
+		if (p.getKeyListener().right) {
+			//speed.x += Math.cos(angle);
+			//speed.y += Math.sin(angle);
 			speed.x += 1;
 		}
 
-		// Bas
-		if (p.keys.left) {
+		// Gauche
+		if (p.getKeyListener().left) {
+			//speed.x -= Math.cos(angle);
+			//speed.y -= Math.sin(angle);
 			speed.x -= 1;
 		}
 		
 		// Gravité
 		speed.y += 0.2;
-		//speed.x *= 0.9;
 		
 		// Limite de vitesse
 		speed.x = PApplet.constrain(speed.x, -5, 5);
@@ -61,7 +65,7 @@ public class Voiture {
 		// Si la mise à jour multijoueur est activée, on envoie une
 		// MaJ toutes les 4 frames
 		if (multiplayerUpdate && p.frameCount % 4 == 0) {
-			sendPositionUpdate(p.multiplayer);
+			sendPositionUpdate(p.getGame().getMultiplayerInstance());
 		}
 		
 	}

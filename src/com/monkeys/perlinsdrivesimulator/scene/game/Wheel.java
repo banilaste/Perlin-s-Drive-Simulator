@@ -1,17 +1,20 @@
-package com.monkeys.perlinsdrivesimulator;
+package com.monkeys.perlinsdrivesimulator.scene.game;
 
+import com.monkeys.perlinsdrivesimulator.Collision;
+import com.monkeys.perlinsdrivesimulator.Main;
 import com.monkeys.perlinsdrivesimulator.container.CollisionResult;
 import com.monkeys.perlinsdrivesimulator.container.PointsResult;
 
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Roue {
+public class Wheel {
 	private int diameter; 
 	private RelativePosition relativePosition;
-	private Voiture parent;
+	private Player parent;
+	private float minDistanceFromGround;
 	
-	public Roue(RelativePosition pos, Voiture parent) {
+	public Wheel(RelativePosition pos, Player parent) {
 		this.diameter = 20;
 		this.relativePosition = pos;
 		this.parent = parent;
@@ -22,19 +25,26 @@ public class Roue {
 		
 		// Récupération des points dans la portée du cercle
 		PVector position = relativePosition.update(parent.getPlannedPosition(), parent.getWidth(), parent.getHeight(), parent.angle);
-		PointsResult points = p.sol.getPointsInRange(PApplet.floor(position.x - diameter / 2), diameter, 2);
+		PointsResult points = p.getGame().getGround().getPointsInRange(PApplet.floor(position.x - diameter / 2), diameter, 2);
 		CollisionResult collision; // Objet résultant d'un calcul de collision
 		float angle, force;
+		
+		minDistanceFromGround = 100;
 		
 		// Pour chaque deux points, on vérifie si la roue entre en collision
 		for (int index = 0; index < points.points.length - 1; index++) {
 			
-			collision = Collision.circleSegment(new PVector(p.sol.getIndexX(index + points.index), points.points[index]),
-					new PVector(p.sol.getIndexX(index + points.index + 1), points.points[index + 1]),
-					position, diameter / 2);
+			collision = Collision.circleSegment(
+					new PVector(p.getGame().getGround().getIndexX(index + points.index), points.points[index]),
+					new PVector(p.getGame().getGround().getIndexX(index + points.index + 1), points.points[index + 1]),
+					position, diameter / 2
+				);
 			
 			// Si elle rentre en collision
 			if (collision != null) {
+				
+				if (collision.norm.mag() < minDistanceFromGround)
+					minDistanceFromGround = collision.norm.mag();
 				
 				// On met le vecteur de collision dans le bon sens
 				if (collision.norm.y > 0) {
@@ -46,7 +56,7 @@ public class Roue {
 				force = PApplet.abs(PApplet.cos(angle) * parent.speed.mag());
 				
 				// On utilie le vecteur normal à la collision pour la modification de vitesse
-				collision.norm.setMag(force * (1 + 0.01f * (diameter - collision.norm.mag()) / collision.norm.mag()));
+				collision.norm.setMag(force);
 				
 				// On ajoute la vitesse de translation
 				parent.speed.add(collision.norm);
@@ -62,5 +72,13 @@ public class Roue {
 		p.fill(145, 226, 50);
 		p.noStroke();
 		p.ellipse(relativePosition.getRelativeX(parent.getWidth()), relativePosition.getRelativeY(parent.getHeight()), diameter, diameter);
+	}
+	
+	public float getMinDistanceFromGround() {
+		return minDistanceFromGround;
+	}
+
+	public int getRadius() {
+		return diameter / 2;
 	}
 }

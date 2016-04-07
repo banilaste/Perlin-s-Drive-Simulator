@@ -1,4 +1,4 @@
-package com.monkeys.perlinsdrivesimulator;
+package com.monkeys.perlinsdrivesimulator.scene.game;
 
 import processing.core.PVector;
 

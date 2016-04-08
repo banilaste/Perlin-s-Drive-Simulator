@@ -10,7 +10,7 @@ import com.monkeys.perlinsdrivesimulator.scene.Scene;
 
 import processing.core.PApplet;
 
-public class Game extends Scene {
+public class GameScene extends Scene {
 	private Ground ground;
 	private Player player;
 	private RemoteConnection multiplayer;

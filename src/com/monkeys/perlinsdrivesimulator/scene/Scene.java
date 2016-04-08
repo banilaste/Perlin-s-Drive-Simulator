@@ -15,5 +15,6 @@ public class Scene {
 		p.text("Default scene :D", 0, 10);
 	}
 	
-	public void onresize() {}
+	public void onresize(Main p) {}
+	public void onclick(Main p) {}
 }

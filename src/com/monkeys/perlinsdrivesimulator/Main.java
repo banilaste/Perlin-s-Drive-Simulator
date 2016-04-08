@@ -4,8 +4,9 @@ import java.io.IOException;
 
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection;
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemotePlayer;
+import com.monkeys.perlinsdrivesimulator.scene.MainMenuScene;
 import com.monkeys.perlinsdrivesimulator.scene.Scene;
-import com.monkeys.perlinsdrivesimulator.scene.game.Game;
+import com.monkeys.perlinsdrivesimulator.scene.game.GameScene;
 import com.monkeys.perlinsdrivesimulator.scene.game.Ground;
 import com.monkeys.perlinsdrivesimulator.scene.game.Player;
 
@@ -18,7 +19,8 @@ public class Main extends PApplet {
 	boolean multiplayerEnabled = false;
 	
 	private int lastWidth = 0;
-	private Game game;
+	private GameScene game;
+	private MainMenuScene mainMenu;
 	
 	public void settings() {
 		size(800, 600);
@@ -33,11 +35,15 @@ public class Main extends PApplet {
 		keys = new KeyListener();
 		
 		// Création de la scène de jeu
-		game = new Game();
+		game = new GameScene();
 		game.init(this);
 		
+		// Création du menu principal
+		mainMenu = new MainMenuScene();
+		mainMenu.init(this);
+		
 		// Définition de la scène par défaut
-		currentScene = game;
+		currentScene = mainMenu;
 	}
 
 	public void draw() {
@@ -52,10 +58,24 @@ public class Main extends PApplet {
 		currentScene.draw(this);
 	}
 
+	public void setScene(Scene scene) {
+		currentScene = scene;
+	}
+	
+	/*
+	 * Fonctions utilisées dans les scènes seules
+	 */
 	public void resize() {
-		currentScene.onresize();
+		currentScene.onresize(this);
 	}
 
+	public void mouseClicked() {
+		currentScene.onclick(this);
+	}
+	
+	/*
+	 * Gestion des touches
+	 */
 	public void keyPressed() {
 		keys.onKeyPressed(this);
 	}
@@ -64,7 +84,7 @@ public class Main extends PApplet {
 		keys.onKeyReleased(this);
 	}
 
-	public Game getGame() {
+	public GameScene getGame() {
 		return game;
 	}
 

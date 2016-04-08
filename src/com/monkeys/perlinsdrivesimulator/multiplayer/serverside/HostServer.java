@@ -39,6 +39,6 @@ public class HostServer implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		HostServer server = new HostServer(25565);
+		HostServer server = new HostServer(12345);
 	}
 }

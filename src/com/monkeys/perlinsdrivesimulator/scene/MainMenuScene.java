@@ -1,8 +1,7 @@
 package com.monkeys.perlinsdrivesimulator.scene;
 
 import com.monkeys.perlinsdrivesimulator.Main;
-import com.monkeys.perlinsdrivesimulator.scene.game.Ground;
-import com.monkeys.perlinsdrivesimulator.scene.game.Player;
+import com.monkeys.perlinsdrivesimulator.container.Callback;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -10,13 +9,29 @@ import processing.core.PConstants;
 public class MainMenuScene extends Scene {
 	protected float angle = 0, size, stripNumber, stripAngle;
 	protected int titleTextSize, titleHalfWidth;
-	protected String titleText = "Perlin's Drive Simulator", descriptionText = "Click to play :D";
+	protected String titleText;
+	private Button playButton;
 	
+	public MainMenuScene(Main main) {
+		super(main);
+	}
+
 	public void init(Main p) {
 		if (initialized) {
 			return;
 		}
 		
+		// Textes
+		titleText = "Perlin's Drive Simulator";
+		
+		// Boutons
+		playButton = new Button(p, "Play !", new Callback() {
+			public void run() {
+				p.setScene(p.getGame());
+			}
+		});
+		
+		// Initialisation des variables
 		onresize(p);
 		stripNumber = 20;
 		stripAngle = PConstants.TWO_PI / stripNumber;
@@ -30,11 +45,13 @@ public class MainMenuScene extends Scene {
 		p.stroke(0);
 		p.fill(255);
 		
+		// Dessin du texte
 		p.textSize(titleTextSize);
 		p.text(titleText, p.width / 2 - titleHalfWidth, p.height * 0.2f);
 		
-		p.textSize(titleTextSize * 0.4f);
-		p.text(descriptionText, p.width / 2 - p.textWidth(descriptionText) / 2, p.height * 0.8f);
+		
+		// Des boutons
+		playButton.draw(p);
 	}
 	
 	public void drawBackground(PApplet p) {
@@ -68,6 +85,8 @@ public class MainMenuScene extends Scene {
 		// Gestion de la taille maximale (pour le fond d'écran)
 		size = Math.max(p.width, p.height);
 		
+		
+		
 		// Calcul de la taille théorique du texte et de la largeur maximale
 		float maxTitleWidth = p.width * 0.8f;
 		titleTextSize = (int) (0.2f * p.height);
@@ -86,9 +105,18 @@ public class MainMenuScene extends Scene {
 		} else {
 			titleHalfWidth = titleHalfWidth / 2;
 		}
+		
+		
+		// Taille des boutons
+		playButton.setPosition((int) (0.35f * p.width), (int) (0.6f * p.height));
+		playButton.setWidth((int) (0.3f * p.width), true, p);
 	}
 	
 	public void onclick(Main p) {
-		p.setScene(p.getGame());
+		playButton.onclick(p);
+	}
+	
+	public void onmousemove(Main p) {
+		playButton.onmousemove(p);
 	}
 }

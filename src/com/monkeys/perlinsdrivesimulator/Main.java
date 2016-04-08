@@ -16,8 +16,6 @@ public class Main extends PApplet {
 	private Scene currentScene;
 	private KeyListener keys;
 	
-	boolean multiplayerEnabled = false;
-	
 	private int lastWidth = 0;
 	private GameScene game;
 	private MainMenuScene mainMenu;
@@ -35,12 +33,11 @@ public class Main extends PApplet {
 		keys = new KeyListener();
 		
 		// Création de la scène de jeu
-		game = new GameScene();
-		game.init(this);
+		game = new GameScene(this);
+		//game.enableMultiplayer(this, "127.0.0.1", 12345);
 		
 		// Création du menu principal
-		mainMenu = new MainMenuScene();
-		mainMenu.init(this);
+		mainMenu = new MainMenuScene(this);
 		
 		// Définition de la scène par défaut
 		currentScene = mainMenu;
@@ -71,6 +68,10 @@ public class Main extends PApplet {
 
 	public void mouseClicked() {
 		currentScene.onclick(this);
+	}
+	
+	public void mouseMoved() {
+		currentScene.onmousemove(this);
 	}
 	
 	/*

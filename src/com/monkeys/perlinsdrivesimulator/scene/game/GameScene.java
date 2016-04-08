@@ -17,6 +17,10 @@ public class GameScene extends Scene {
 	
 	private boolean multiplayerEnabled = false;
 	
+	public GameScene(Main main) {
+		super(main);
+	}
+
 	public void init(Main p) {
 		if (initialized) {
 			return;

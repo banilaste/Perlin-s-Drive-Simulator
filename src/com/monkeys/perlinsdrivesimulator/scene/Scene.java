@@ -24,4 +24,5 @@ public class Scene {
 	public void onresize(Main p) {}
 	public void onclick(Main p) {}
 	public void onmousemove(Main p) {}
+	public void onkeytyped(Main p) {}
 }

@@ -65,12 +65,13 @@ public class GameScene extends Scene {
 	 * @param p
 	 * @param ip Adresse du serveur
 	 * @param port Port sur le serveur
+	 * @param username Nom d'utilisateur
 	 */
-	public void enableMultiplayer(Main p, String ip, int port) {
+	public void enableMultiplayer(Main p, String ip, int port, String username) {
 		if (multiplayerEnabled) return;
 		
 		try {
-			multiplayer = new RemoteConnection(ip, port, p);
+			multiplayer = new RemoteConnection(ip, port, username, p);
 		} catch (IOException e) {
 			e.printStackTrace();
 			multiplayerEnabled = false;

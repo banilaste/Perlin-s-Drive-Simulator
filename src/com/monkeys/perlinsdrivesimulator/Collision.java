@@ -42,4 +42,8 @@ public class Collision {
 
 		return null;
 	}
+	
+	public static CollisionResult rectSegment(PVector pointA, PVector pointB, PVector position,  PVector size) {
+		return null;
+	}
 }

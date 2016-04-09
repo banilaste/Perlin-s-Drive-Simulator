@@ -78,8 +78,10 @@ public class Button extends Scene {
 	}
 	
 	// Setters
-	public void setSize(int width, int height) {
+	public void setSize(float width, float height) {
 		size.set(width, height);
+		
+		textSize = (int) (height * 0.6f);
 	}
 	
 	/**
@@ -102,7 +104,7 @@ public class Button extends Scene {
 		}
 	}
 	
-	public void setPosition(int x, int y) {
-		position.set(x, y);
+	public void setPosition(float f, float g) {
+		position.set(f, g);
 	}
 }

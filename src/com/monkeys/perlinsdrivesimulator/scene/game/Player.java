@@ -12,7 +12,9 @@ public class Player {
 	protected PVector speed, position, plannedPosition;
 	protected int width , height, alternate = 0;
 	protected float angle, rotationSpeed = 0;
-	protected Wheel roues[];
+	protected Wheel wheels[];
+	protected String username = "";
+
 	private boolean multiplayerUpdate = false;
 	
 	public Player (PApplet p) {
@@ -21,7 +23,7 @@ public class Player {
 		width = 60 ;
 		height = 30;
 
-		roues = new Wheel[] {
+		wheels = new Wheel[] {
 			new Wheel(RelativePosition.LEFT, this),
 			new Wheel(RelativePosition.RIGHT, this)
 		};	
@@ -55,8 +57,8 @@ public class Player {
 		// entre la roue gauche et droite pour la mise à jour
 		// pour éviter des bugs)
 		alternate = 1 - alternate;
-		roues[alternate].update(p);
-		roues[1 - alternate].update(p);
+		wheels[alternate].update(p);
+		wheels[1 - alternate].update(p);
 		
 		position.add(speed);
 		angle += rotationSpeed / 2;
@@ -82,9 +84,14 @@ public class Player {
 		p.noStroke();
 		p.rect(-width / 2, -height / 2, width , height);
 		
-		// Dessin des roue
-		roues[0].draw(p);
-		roues[1].draw(p);
+		// Dessin des roues
+		wheels[0].draw(p);
+		wheels[1].draw(p);
+		
+		// Et enfin le nom du joueur
+		p.textSize(18);
+		p.fill(255);
+		p.text(username, -p.textWidth(username) / 2, -height / 2 - 9);
 		
 		p.popMatrix();
 	}
@@ -119,5 +126,9 @@ public class Player {
 	
 	public PVector getPlannedPosition() {
 		return plannedPosition;
+	}
+
+	public void setName(String text) {
+		username = text;
 	}
 }

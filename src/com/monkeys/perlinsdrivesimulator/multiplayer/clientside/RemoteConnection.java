@@ -12,6 +12,7 @@ import com.monkeys.perlinsdrivesimulator.Main;
 
 public class RemoteConnection implements Runnable {
 	private Map<Integer, RemotePlayer> players;
+	private String username;
 	
 	private Socket soc;
 	private Thread thread;
@@ -22,9 +23,10 @@ public class RemoteConnection implements Runnable {
 	private Main main;
 	
 	// Initialisation d'un nouveau client
-	public RemoteConnection (String ip, int port, Main m) throws IOException {
+	public RemoteConnection (String ip, int port, String name, Main m) throws IOException {
 		soc = new Socket(ip, port);
 		main = m;
+		username = name;
 		
 		players = new HashMap<Integer, RemotePlayer>();
 		

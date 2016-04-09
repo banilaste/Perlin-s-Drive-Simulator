@@ -19,6 +19,7 @@ public class RemotePlayer extends Player {
 		// TODO: mettre à jour si la classe Voiture le requiert un jour
 		super(null);
 		
+		this.username = "unnamed";
 		this.connection = connection;
 		this.id = id;
 	}
@@ -66,6 +67,9 @@ public class RemotePlayer extends Player {
 			this.speed.y = Float.parseFloat(parts[3]);
 			this.angle = Float.parseFloat(parts[4]);
 			this.rotationSpeed = Float.parseFloat(parts[5]);
+		
+		} else if (reqType == RequestType.I_AM.id) {
+			username = data;
 		}
 		
 		// On met à jour le temps de la dernière mise à jour

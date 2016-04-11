@@ -1,16 +1,10 @@
 package com.monkeys.perlinsdrivesimulator;
 
-import java.io.IOException;
-
-import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection;
-import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemotePlayer;
 import com.monkeys.perlinsdrivesimulator.scene.Background;
 import com.monkeys.perlinsdrivesimulator.scene.MainMenuScene;
 import com.monkeys.perlinsdrivesimulator.scene.Scene;
 import com.monkeys.perlinsdrivesimulator.scene.ServerSelectScene;
 import com.monkeys.perlinsdrivesimulator.scene.game.GameScene;
-import com.monkeys.perlinsdrivesimulator.scene.game.Ground;
-import com.monkeys.perlinsdrivesimulator.scene.game.Player;
 
 import processing.core.PApplet;
 

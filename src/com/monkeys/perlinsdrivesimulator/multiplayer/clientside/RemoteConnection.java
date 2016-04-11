@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,8 @@ import com.monkeys.perlinsdrivesimulator.Main;
 
 public class RemoteConnection implements Runnable {
 	private Map<Integer, RemotePlayer> players;
-	private String username;
+	private String username, ip;
+	private int port;
 	
 	private Socket soc;
 	private Thread thread;
@@ -24,15 +26,11 @@ public class RemoteConnection implements Runnable {
 	
 	// Initialisation d'un nouveau client
 	public RemoteConnection (String ip, int port, String name, Main m) throws IOException {
-		soc = new Socket(ip, port);
+		this.ip = ip;
+		this.port = port;
+		
 		main = m;
 		username = name;
-		
-		players = new HashMap<Integer, RemotePlayer>();
-		
-		// Création des objets de lecture/écriture
-		reader = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-		writer = new PrintWriter(soc.getOutputStream());
 		
 		// Création du thread et démarage
 		thread = new Thread(this);
@@ -45,6 +43,9 @@ public class RemoteConnection implements Runnable {
 		int playerId, startData, reqType;
 		
 		try {
+			// Initialisation
+			init();
+			
 			while(true) {
 				nextLine = reader.readLine();
 
@@ -76,6 +77,16 @@ public class RemoteConnection implements Runnable {
 		}
 	}
 
+	private void init() throws UnknownHostException, IOException {
+		soc = new Socket(ip, port);
+		
+		players = new HashMap<Integer, RemotePlayer>();
+		
+		// Création des objets de lecture/écriture
+		reader = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+		writer = new PrintWriter(soc.getOutputStream());
+	}
+	
 	/**
 	 * Envoie une requète au serveur (pour envoyer ou demander des infos)
 	 * Note : les requète PONG_* ne peuvent être envoyées

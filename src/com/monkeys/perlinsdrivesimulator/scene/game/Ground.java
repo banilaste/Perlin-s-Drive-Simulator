@@ -73,6 +73,7 @@ public class Ground {
 			
 			startPoint -= firstSection.length;
 			offsetX += firstSection.length * pointDistance;
+			startX -= firstSection.length * pointDistance;
 			
 			generate(p, section + 1, true);
 			
@@ -84,6 +85,7 @@ public class Ground {
 			
 			startPoint += firstSection.length;
 			offsetX -= firstSection.length * pointDistance;
+			startX += firstSection.length * pointDistance;
 			
 			generate(p, section - 1, true);
 			
@@ -106,7 +108,7 @@ public class Ground {
 		p.vertex(startX, p.height * 2);
 		
 		for (int index = PApplet.max(0, startPoint);
-				index < startPoint + maxPoint && index-firstSection.length < secondSection.length;
+				index < startPoint + maxPoint && index - firstSection.length < secondSection.length;
 				index += 1) {
 
 			// On dessine un point par point affichable

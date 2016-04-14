@@ -12,7 +12,7 @@ public enum RelativePosition {
 		this.y = y;
 	}
 	
-	public PVector update(PVector pos, int w, int h, float angle) {
+	public PVector getPosition(PVector pos, int w, int h, float angle) {
 		
 		// NOTE : le +0.5 correspond à la translation de 50% de la taille de la voiture avant le dessin
 		return pos.copy().add(getGravityCenterLocation(w, h, angle)).add(w * 0.5f, h * 0.5f);

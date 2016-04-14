@@ -5,7 +5,6 @@ import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RequestType;
 
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PVector;
 
 public class Player {
@@ -19,7 +18,7 @@ public class Player {
 	
 	public Player (PApplet p) {
 		speed = new PVector (0, 0);
-		position = new PVector ();
+		position = new PVector (10, -50);
 		width = 60 ;
 		height = 30;
 

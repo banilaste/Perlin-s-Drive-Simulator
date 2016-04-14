@@ -38,8 +38,8 @@ public class Main extends PApplet {
 		// Définition de la scène par défaut
 		currentScene = mainMenu;
 		
-		Background.changeBackgroundSetting(20, 0.001f);
-		Background.onWindowsResized(this);
+		Background.changeBackgroundSettings(20, 0.001f);
+		Background.onWindowResized(this);
 	}
 
 	public void draw() {
@@ -55,7 +55,7 @@ public class Main extends PApplet {
 	}
 
 	/**
-	 * Change la scene courante et active onresize pour pallier aux redimensionnements non pris en comptes
+	 * Change la scène courante et active onresize pour pallier aux redimensionnements non pris en comptes
 	 * @param scene
 	 */
 	public void setScene(Scene scene) {
@@ -68,7 +68,7 @@ public class Main extends PApplet {
 	 * Fonctions utilisées dans les scènes seules
 	 */
 	public void resize() {
-		Background.onWindowsResized(this);
+		Background.onWindowResized(this);
 		
 		currentScene.onresize(this);
 	}
@@ -94,6 +94,10 @@ public class Main extends PApplet {
 		keys.onKeyReleased(this);
 	}
 
+	
+	/*
+	 * Getters
+	 */
 	public GameScene getGame() {
 		return game;
 	}
@@ -109,6 +113,8 @@ public class Main extends PApplet {
 	public Scene getServerSelect() {
 		return serverSelect;
 	}
+	
+	
 	
 	// LE MAIN !
 	public static void main(String args[]) {

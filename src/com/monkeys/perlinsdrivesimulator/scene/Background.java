@@ -7,7 +7,7 @@ public class Background {
 	private static float angle = 0, size, stripNumber, stripAngle, rotationSpeed = 0.001f;
 	
 	public static void drawAmazingBackground(PApplet p) {
-		angle += 0.001f;
+		angle += rotationSpeed;
 		
 		p.pushMatrix();
 		
@@ -33,13 +33,13 @@ public class Background {
 		p.popMatrix();
 	}
 	
-	public static void changeBackgroundSetting(int stripNb, float rotationalSpeed) {
+	public static void changeBackgroundSettings(int stripNb, float rotationalSpeed) {
 		stripNumber = stripNb;
 		stripAngle = PConstants.TWO_PI / stripNumber;
 		rotationSpeed = rotationalSpeed;
 	}
 	
-	public static void onWindowsResized(PApplet p) {
+	public static void onWindowResized(PApplet p) {
 		// Gestion de la taille maximale d'une bande
 		size = Math.max(p.width, p.height);
 	}

@@ -3,9 +3,6 @@ package com.monkeys.perlinsdrivesimulator.scene;
 import com.monkeys.perlinsdrivesimulator.Main;
 import com.monkeys.perlinsdrivesimulator.container.Callback;
 
-import processing.core.PApplet;
-import processing.core.PConstants;
-
 public class MainMenuScene extends Scene {
 	protected int titleTextSize, titleHalfWidth;
 	protected String titleText;
@@ -61,8 +58,6 @@ public class MainMenuScene extends Scene {
 	
 	
 	public void onresize(Main p) {
-		
-		
 		// Calcul de la taille théorique du texte et de la largeur maximale
 		float maxTitleWidth = p.width * 0.8f;
 		titleTextSize = (int) (0.2f * p.height);

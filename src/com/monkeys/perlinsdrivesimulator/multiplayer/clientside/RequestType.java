@@ -8,14 +8,6 @@ public enum RequestType {
 	RequestType() {
 		id = ordinal();
 	}
-
-	public static RequestType getFromNumber(int nb) {
-		try {
-			return RequestType.values()[nb];
-		} catch ( ArrayIndexOutOfBoundsException e) {
-			throw new IllegalArgumentException("Unknown request type with id : " + nb);
-		}
-	}
 	
 	public static RequestType getFromString(String c) {
 		try {

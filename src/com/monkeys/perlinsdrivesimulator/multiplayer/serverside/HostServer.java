@@ -31,7 +31,7 @@ public class HostServer implements Runnable {
 			// Loop
 			while (! stop) {
 				next = server.accept();
-				client = new HostedClient(next, this);
+				client = new HostedClient(next);
 				
 				System.out.println("New client from " + next.getInetAddress().getHostAddress() + ", using id " + client.getId());
 			}

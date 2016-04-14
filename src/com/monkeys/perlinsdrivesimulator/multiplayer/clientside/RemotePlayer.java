@@ -1,13 +1,9 @@
 package com.monkeys.perlinsdrivesimulator.multiplayer.clientside;
 
 import java.util.Date;
-import java.util.Scanner;
-import java.util.Vector;
 
 import com.monkeys.perlinsdrivesimulator.Main;
 import com.monkeys.perlinsdrivesimulator.scene.game.Player;
-
-import processing.core.PApplet;
 
 public class RemotePlayer extends Player {
 	protected int id;
@@ -17,7 +13,7 @@ public class RemotePlayer extends Player {
 	
 	public RemotePlayer(RemoteConnection connection, int id) {
 		// La classe supérieure ne nécessite pas processing, on lui évite donc cet ennui
-		// TODO: mettre à jour si la classe Voiture le requiert un jour
+		// TODO: mettre à jour si la classe Player le requiert un jour
 		super(null);
 		
 		this.lastUpdateTime = new Date().getTime() + 5000; // on laisse 10s avant le premier ping
@@ -63,7 +59,6 @@ public class RemotePlayer extends Player {
 			
 		} else if (reqType == RequestType.POSITION.id) {
 			// Si c'est une MaJ de position, onécontent
-
 			String parts[] = data.split(" ");
 			
 			this.position.x = Float.parseFloat(parts[0]);
@@ -81,13 +76,5 @@ public class RemotePlayer extends Player {
 		lastUpdateTime = currentTime;
 		
 		return this;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public int getId() {
-		return id;
 	}
 }

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RequestType;
@@ -16,7 +15,6 @@ public class HostedClient implements Runnable {
 	private static long seed = (long) Math.random();
 	
 	private String username;
-	private HostServer server;
 	private Socket soc;
 	private Thread thread;
 	
@@ -25,8 +23,7 @@ public class HostedClient implements Runnable {
 	private int id;
 	
 	// Initialisation d'un nouveau client
-	public HostedClient (Socket soc, HostServer server) throws IOException {
-		this.server = server;
+	public HostedClient (Socket soc) throws IOException {
 		this.soc = soc;
 		
 		// Création des objets de lecture/écriture

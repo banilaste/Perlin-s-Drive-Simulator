@@ -2,13 +2,10 @@ package com.monkeys.perlinsdrivesimulator.scene.game;
 
 import java.io.IOException;
 
-import com.monkeys.perlinsdrivesimulator.KeyListener;
 import com.monkeys.perlinsdrivesimulator.Main;
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection;
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemotePlayer;
 import com.monkeys.perlinsdrivesimulator.scene.Scene;
-
-import processing.core.PApplet;
 
 public class GameScene extends Scene {
 	private Ground ground;
@@ -73,7 +70,7 @@ public class GameScene extends Scene {
 	}
 	
 	public void onresize(Main p) {
-		ground.resize(p);
+		ground.onresize(p);
 	}
 	
 	/**

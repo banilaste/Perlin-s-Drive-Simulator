@@ -15,6 +15,8 @@ public class GameScene extends Scene {
 	private Player player;
 	private RemoteConnection multiplayer;
 	
+	protected ProgressBar fuelBar;
+	
 	private boolean multiplayerEnabled = false;
 	
 	public GameScene(Main main) {
@@ -29,16 +31,30 @@ public class GameScene extends Scene {
 		ground = new Ground(p);
 		player = new Player(p);
 		
+		fuelBar = new ProgressBar(p)
+			.setColor(p.color(150, 0, 0))
+			.setMaxValue(1)
+			.setLabel("Fuel : {} %");
+		
+		fuelBar.getPosition().set(10, 10);
+		fuelBar.getSize().set(300, 30);
+		
 		super.init(p);
 	}
 	
 	public void draw(Main p) {
 		p.background(0);
+		
+		// Dessin des barres d'info
+		fuelBar.draw(p);
+		
+		
 		p.translate(-player.getPosition().x + p.width * 3/10, -player.getPosition().y + p.height / 2);
 		
 		// Mise à jour du joueur
 		player.update(p);
-
+		fuelBar.setLevel(player.getFuelLevel());
+		
 		// Dessin du joueur local
 		player.draw(p);
 

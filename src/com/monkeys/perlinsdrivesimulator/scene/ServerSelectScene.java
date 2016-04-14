@@ -21,16 +21,25 @@ public class ServerSelectScene extends Scene {
 		
 		accept = new Button(p, "Let's go !", new Callback() {
 			public void run() {
-				p.setScene(p.getGame());
-				
+				// On change la scène après être connecté pour être sur de ne pas planter
 				p.getGame().enableMultiplayer(p, serverName.getText(), serverPort.getInteger(), username.getText());
 				p.getGame().getPlayer().setName(username.getText());
+				
+				p.setScene(p.getGame());
 			}
 		});
 
 		username = new TextBox(p, "Username");
 		serverName = new TextBox(p, "Server address");
 		serverPort = new NumberBox(p, "Server port");
+		
+		username.nextElement = serverName;
+		serverName.nextElement = serverPort;
+		serverPort.nextElement = username;
+		
+		// TODO: remove
+		serverName.setText("127.0.0.1");
+		serverPort.setText("12345");
 		
 		onresize(p);
 	}

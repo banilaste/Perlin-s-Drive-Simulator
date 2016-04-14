@@ -10,8 +10,8 @@ import processing.core.PVector;
 
 public class Player {
 	protected PVector speed, position, plannedPosition;
-	protected int width , height, alternate = 0;
-	protected float angle, rotationSpeed = 0;
+	protected int width, height, alternate = 0;
+	protected float angle, rotationSpeed = 0, fuelLevel;
 	protected Wheel wheels[];
 	protected String username = "";
 
@@ -26,26 +26,29 @@ public class Player {
 		wheels = new Wheel[] {
 			new Wheel(RelativePosition.LEFT, this),
 			new Wheel(RelativePosition.RIGHT, this)
-		};	
+		};
+		
+		fuelLevel = 1;
 	}
 	
 	public void update (Main p){
-		// Droite
+		// Droite (la vitesse ajoutée dépend du réservoir : 40% à 0 et 100% à 1)
 		if (p.getKeyListener().right) {
-			//speed.x += Math.cos(angle);
-			//speed.y += Math.sin(angle);
-			speed.x += 1;
+			speed.x += 0.8f * fuelLevel + 0.2f;
 		}
 
 		// Gauche
 		if (p.getKeyListener().left) {
-			//speed.x -= Math.cos(angle);
-			//speed.y -= Math.sin(angle);
-			speed.x -= 1;
+			speed.x -= 0.8f * fuelLevel + 0.2f;
 		}
 		
-		// Gravité
+		// Gravité et dépense en carburant
 		speed.y += 0.2;
+		fuelLevel -= 0.0001f;
+		
+		if (fuelLevel <= 0) {
+			fuelLevel = 0;
+		}
 		
 		// Limite de vitesse
 		speed.x = PApplet.constrain(speed.x, -5, 5);
@@ -98,7 +101,7 @@ public class Player {
 	
 	public void sendPositionUpdate(RemoteConnection connection) {
 		// On envoie la vitesse également pour permettre de donner un semblant de fluidité aux mises à jour
-		connection.send(RequestType.POSITION, 0,
+		connection.send(RequestType.POSITION,
 			position.x + " " + position.y + " " + speed.x + " " + speed.y + " " + angle + " " + rotationSpeed
 		);
 	}
@@ -130,5 +133,9 @@ public class Player {
 
 	public void setName(String text) {
 		username = text;
+	}
+
+	public float getFuelLevel() {
+		return fuelLevel;
 	}
 }

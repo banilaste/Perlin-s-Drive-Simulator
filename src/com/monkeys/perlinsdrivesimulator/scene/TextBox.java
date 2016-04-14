@@ -5,11 +5,10 @@ import com.monkeys.perlinsdrivesimulator.Main;
 import processing.core.PConstants;
 import processing.core.PVector;
 
-public class TextBox extends Scene {
+public class TextBox extends FocusableElement {
 	protected PVector position, size;
 	protected String text = "", emptyText = "Enter somthing :D";
 	protected int textSize, focusBlinkDelay;
-	protected boolean focused = false, editing = false;
 	
 	public TextBox(Main p, String text) {
 		super(p);
@@ -18,6 +17,8 @@ public class TextBox extends Scene {
 	}
 	
 	public void init(Main p) {
+		mouseFocusCursor = PConstants.TEXT;
+		
 		position = new PVector();
 		size = new PVector();
 	}
@@ -42,7 +43,7 @@ public class TextBox extends Scene {
 		}
 		
 		// Curseur
-		if (editing) {
+		if (hasFocus) {
 			focusBlinkDelay --;
 			
 			if (focusBlinkDelay <= 0) {
@@ -55,42 +56,22 @@ public class TextBox extends Scene {
 		}
 	}
 	
-	public void onclick(Main p) {
-		if (isIn(p.mouseX, p.mouseY)) {
-			editing = true;
-			focusBlinkDelay = 35;
-		} else {
-			editing = false;
-		}
-	}
-	
 	public void onkeytyped(Main p) {
-		if (!editing) return;
+		if (!hasFocus) return;
 		
 		if (p.keyCode == PConstants.BACKSPACE) {
 			if (text.length() == 0) return;
 			
 			text = text.substring(0, text.length() - 1);
-			return;
+		} else if (p.key == PConstants.TAB) {
+			focusNext();
 		} else if (p.key != PConstants.CODED) {
-			System.out.println("ok");
 			text += p.key;
 		}
 	}
 	
-	public void onmousemove(Main p) {
-		if (isIn(p.mouseX, p.mouseY)) {
-			focused = true;
-			p.cursor(PConstants.TEXT);
-			
-		// On ne change qu'une fois l'état du curseur pour éviter des conflits
-		} else if(focused) {
-			p.cursor(PConstants.ARROW);
-			focused = false;
-		}
-	}
 	
-	public boolean isIn(int x, int y) {
+	public boolean isPointIn(float x, float y) {
 		// Vérificaition du clic pour x
 		if (x < position.x || x > position.x + size.x)
 			return false;
@@ -115,5 +96,9 @@ public class TextBox extends Scene {
 
 	public String getText() {
 		return text;
+	}
+
+	public void setText(String string) {
+		text = string;
 	}
 }

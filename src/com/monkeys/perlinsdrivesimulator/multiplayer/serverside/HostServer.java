@@ -29,13 +29,17 @@ public class HostServer implements Runnable {
 			System.out.println("Starting server on port " + port);
 			
 			// Loop
-			while (true) {
+			while (! stop) {
 				next = server.accept();
 				client = new HostedClient(next, this);
 				
 				System.out.println("New client from " + next.getInetAddress().getHostAddress() + ", using id " + client.getId());
 			}
 		} catch (IOException e) {e.printStackTrace();}
+	}
+	
+	public void stop() {
+		stop = true;
 	}
 	
 	public static void main(String[] args) {

@@ -7,12 +7,11 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
 
-public class Button extends Scene {
+public class Button extends FocusableElement {
 	private Callback callback;
 	private PVector position, size;
 	private String text;
 	private int textSize;
-	private boolean focused = false;
 	
 	public Button(Main p, String text, Callback callback) {
 		super(p);
@@ -31,7 +30,7 @@ public class Button extends Scene {
 		p.stroke(10);
 		p.strokeWeight(4);
 		
-		if (!focused) {
+		if (!hasMouseFocus) {
 			p.fill(0);
 		} else {
 			p.fill(150, 40, 40);
@@ -47,25 +46,16 @@ public class Button extends Scene {
 	}
 	
 	public void onclick(Main p) {
-		if (!isIn(p.mouseX, p.mouseY))
-			return;
+		boolean previousState = hasFocus;
 		
-		callback.run();
-	}
-	
-	public void onmousemove(Main p) {
-		if (isIn(p.mouseX, p.mouseY)) {
-			focused = true;
-			p.cursor(PConstants.HAND);
-			
-		// On ne change qu'une fois l'état du curseur pour éviter des conflits
-		} else if(focused) {
-			p.cursor(PConstants.ARROW);
-			focused = false;
+		super.onclick(p);
+
+		if (!previousState && hasFocus) {
+			callback.run();
 		}
 	}
 	
-	public boolean isIn(int x, int y) {
+	public boolean isPointIn(float x, float y) {
 		// Vérificaition du clic pour x
 		if (x < position.x || x > position.x + size.x)
 			return false;

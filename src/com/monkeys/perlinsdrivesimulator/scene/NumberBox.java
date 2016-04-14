@@ -11,7 +11,7 @@ public class NumberBox extends TextBox {
 	}
 	
 	public void onkeytyped(Main p) {
-		if (!editing) return;
+		if (!hasFocus) return;
 		
 		if (p.keyCode == PConstants.BACKSPACE) {
 			if (text.length() == 0) return;

@@ -12,6 +12,7 @@ import processing.core.PApplet;
 public class RemotePlayer extends Player {
 	protected int id;
 	protected long lastUpdateTime, lastPingTime, currentTime;
+	protected boolean usernameRequested = false;
 	private RemoteConnection connection;
 	
 	public RemotePlayer(RemoteConnection connection, int id) {
@@ -19,6 +20,7 @@ public class RemotePlayer extends Player {
 		// TODO: mettre à jour si la classe Voiture le requiert un jour
 		super(null);
 		
+		this.lastUpdateTime = new Date().getTime() + 5000; // on laisse 10s avant le premier ping
 		this.username = "unnamed";
 		this.connection = connection;
 		this.id = id;
@@ -29,15 +31,21 @@ public class RemotePlayer extends Player {
 		currentTime = new Date().getTime();
 		
 		// Si le joueur n'est pas mis à jour depuis 5 secondes
-		if (currentTime > lastUpdateTime + 5) {
+		if (currentTime > lastUpdateTime + 5000) {
 			
 			// Si un ping est envoyé, on attend 5 secondes avant le prochain
-			if (currentTime > lastPingTime + 5) {
+			if (currentTime > lastPingTime + 5000) {
 				// On envoie une demande de ping
-				connection.send(RequestType.PING, id, "pls");
+				connection.send(RequestType.PING, "" + id);
 			
 				lastPingTime = currentTime;
 			}
+		}
+		
+		// Si on n'a jamais demandé le nom d'utilisateur, il est surement temps
+		if (!usernameRequested) {
+			connection.send(RequestType.WHO_IS, "" + id);
+			usernameRequested = true;
 		}
 		
 		// On met quand même la mise à jour de la position en fonction de la vitesse (en cas
@@ -48,10 +56,7 @@ public class RemotePlayer extends Player {
 	
 	// Gère la requète recue du serveur
 	public RemotePlayer request(int reqType, String data) {
-		if (reqType == RequestType.PONG_ALIVE.id) {
-			
-			
-		} else if (reqType == RequestType.PONG_DEAD.id) {
+		if (reqType == RequestType.PONG_DEAD.id) {
 			
 			// On se supprime simplement de la liste si le joueur associé est déconnecté
 			connection.getPlayers().remove(id);

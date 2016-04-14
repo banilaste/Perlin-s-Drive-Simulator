@@ -64,6 +64,9 @@ public class RemoteConnection implements Runnable {
 					main.noiseSeed(Long.parseLong(data));
 					main.getGame().getGround().generate(main, main.getGame().getGround().getSection(), false);
 					
+				} else if (reqType == RequestType.WHO_IS.id) {
+					send(RequestType.I_AM, username);
+					
 				} else if (players.containsKey(playerId)) {
 					players.get(playerId).request(reqType, data);
 					
@@ -91,19 +94,12 @@ public class RemoteConnection implements Runnable {
 	 * Envoie une requète au serveur (pour envoyer ou demander des infos)
 	 * Note : les requète PONG_* ne peuvent être envoyées
 	 */
-	public void send(RequestType type, int destinationId, String data) {
+	public void send(RequestType type, String data) {
 		
 		// Envoi du type de requète sous forme de chaine
 		writer.write(type.id + "");
 		
-		if (type == RequestType.PING) { // Demande de "ping"
-			
-			// longueur id + id
-			writer.write(Math.round(Math.log10(destinationId) + 1) + "" + destinationId);
-		
-		} else if (type == RequestType.POSITION) {
-			writer.write(data);
-		}
+		writer.write(data);
 		
 		// Retour à la ligne pour signifier la fin du contenu
 		writer.write("\n");

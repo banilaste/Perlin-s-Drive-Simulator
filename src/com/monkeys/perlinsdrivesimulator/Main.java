@@ -1,6 +1,8 @@
 package com.monkeys.perlinsdrivesimulator;
 
 import com.monkeys.perlinsdrivesimulator.scene.Background;
+import com.monkeys.perlinsdrivesimulator.scene.FocusableElement;
+import com.monkeys.perlinsdrivesimulator.scene.GameOverScene;
 import com.monkeys.perlinsdrivesimulator.scene.MainMenuScene;
 import com.monkeys.perlinsdrivesimulator.scene.Scene;
 import com.monkeys.perlinsdrivesimulator.scene.ServerSelectScene;
@@ -16,6 +18,7 @@ public class Main extends PApplet {
 	private GameScene game;
 	private MainMenuScene mainMenu;
 	private ServerSelectScene serverSelect;
+	private GameOverScene gameOver;
 	
 	public void settings() {
 		size(800, 600);
@@ -34,6 +37,7 @@ public class Main extends PApplet {
 		game = new GameScene(this);
 		mainMenu = new MainMenuScene(this);
 		serverSelect = new ServerSelectScene(this);
+		gameOver = new GameOverScene();
 		
 		// Définition de la scène par défaut
 		currentScene = mainMenu;
@@ -60,7 +64,8 @@ public class Main extends PApplet {
 	 */
 	public void setScene(Scene scene) {
 		currentScene = scene;
-		
+
+		FocusableElement.currentFocus.unfocus();
 		currentScene.onresize(this);
 	}
 	
@@ -114,7 +119,9 @@ public class Main extends PApplet {
 		return serverSelect;
 	}
 	
-	
+	public GameOverScene getGameOver() {
+		return gameOver;
+	}
 	
 	// LE MAIN !
 	public static void main(String args[]) {

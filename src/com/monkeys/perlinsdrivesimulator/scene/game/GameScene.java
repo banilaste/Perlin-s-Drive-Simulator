@@ -21,10 +21,6 @@ public class GameScene extends Scene {
 	}
 
 	public void init(Main p) {
-		if (initialized) {
-			return;
-		}
-		
 		ground = new Ground(p);
 		player = new Player(p);
 		

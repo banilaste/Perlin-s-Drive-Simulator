@@ -5,7 +5,7 @@ import com.monkeys.perlinsdrivesimulator.Main;
 import processing.core.PConstants;
 
 public class FocusableElement extends Scene {
-	protected static FocusableElement currentFocus;
+	public static FocusableElement currentFocus;
 	protected static int mouseDefaultCursor = PConstants.ARROW;
 	
 	protected int mouseFocusCursor = PConstants.HAND;

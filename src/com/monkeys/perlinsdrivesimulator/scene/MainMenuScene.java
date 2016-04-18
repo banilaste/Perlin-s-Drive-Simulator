@@ -23,6 +23,7 @@ public class MainMenuScene extends Scene {
 		// Boutons
 		playButton = new Button(p, "Play !", new Callback() {
 			public void run() {
+				p.getGame().init(p);
 				p.setScene(p.getGame());
 			}
 		});

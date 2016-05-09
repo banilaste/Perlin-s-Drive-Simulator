@@ -5,6 +5,11 @@ import com.monkeys.perlinsdrivesimulator.container.Callback;
 
 import processing.core.PVector;
 
+/**
+ * Classe du composant de type bouton
+ * @author Banilaste
+ *
+ */
 public class Button extends FocusableElement {
 	private Callback callback;
 	private PVector position, size;
@@ -19,15 +24,17 @@ public class Button extends FocusableElement {
 	}
 	
 	public void init(Main p) {
+		// Initialisation de la taille et de la position (modifiée par setSize et setPosition)
 		position = new PVector();
 		size = new PVector();
 	}
 	
 	public void draw(Main p) {
-		// Rectangle
+		// Dessin du rectangle
 		p.stroke(10);
 		p.strokeWeight(4);
 		
+		// Change la couleur selon le focus
 		if (!hasMouseFocus) {
 			p.fill(0);
 		} else {
@@ -36,7 +43,7 @@ public class Button extends FocusableElement {
 		
 		p.rect(position.x, position.y, size.x, size.y, size.x * 0.03f);
 		
-		// Texte
+		// Affichage du texte
 		p.fill(255);
 		
 		p.textSize(textSize);
@@ -44,10 +51,12 @@ public class Button extends FocusableElement {
 	}
 	
 	public void onclick(Main p) {
+		// On sauvegarde l'état précédent pour éviter d'appeler plusieures fois la fonction
 		boolean previousState = hasFocus;
 		
 		super.onclick(p);
 
+		// On appelle la fonction si on a le focus
 		if (!previousState && hasFocus) {
 			callback.run();
 		}

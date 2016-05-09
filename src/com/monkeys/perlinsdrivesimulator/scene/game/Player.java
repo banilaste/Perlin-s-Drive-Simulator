@@ -43,7 +43,7 @@ public class Player {
 		
 		// Gravité et dépense en carburant
 		speed.y += 0.2;
-		fuelLevel -= 0.005f;
+		fuelLevel -= 0.00005f;
 		
 		if (fuelLevel <= 0) {
 			p.setScene(p.getGameOver());

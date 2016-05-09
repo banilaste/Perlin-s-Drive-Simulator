@@ -8,7 +8,7 @@ import processing.core.PConstants;
 
 public class Ground {
 	private float firstSection[], secondSection[];
-	private int pointDistance, maxPoint, section, offsetX, sectionHeight;
+	private int pointDistance, maxPoint, section, offsetX, sectionHeight, color, color2;
 
 	public Ground(Main p) {
 		firstSection = new float[100];
@@ -24,6 +24,10 @@ public class Ground {
 		// Décalage depuis le début
 		offsetX = 0;
 
+		// Couleur
+		color = p.color(p.random(255), p.random(255), p.random(255));
+		color2 = p.lerpColor(color, p.color(0), 0.1f);
+		
 		// Génération de la première section
 		generate(p, section, false);
 	}
@@ -98,8 +102,8 @@ public class Ground {
 		p.translate(offsetX, 0);
 		
 		// Styles
-		p.stroke(255, 0, 255);
-		p.fill(200, 0, 200);
+		p.stroke(color2);
+		p.fill(color);
 		p.strokeWeight(3);
 
 		// On commence à dessiner le sol

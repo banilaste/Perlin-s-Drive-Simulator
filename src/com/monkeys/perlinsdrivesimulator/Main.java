@@ -13,7 +13,7 @@ import processing.core.PApplet;
 public class Main extends PApplet {
 	private Scene currentScene;
 	private KeyListener keys;
-	
+
 	private int lastWidth = 0;
 	private GameScene game;
 	private MainMenuScene mainMenu;

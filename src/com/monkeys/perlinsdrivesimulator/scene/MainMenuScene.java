@@ -16,16 +16,13 @@ public class MainMenuScene extends Scene {
 	}
 
 	public void init(Main p) {
-		if (initialized) {
-			return;
-		}
-		
-		// Textes
+		// Titre
 		titleText = "Perlin's Drive Simulator";
 		
-		// Création des boutons et ajout de sa fonction appelée lors du clic
+		// Création des boutons et ajout de leurs fonctions d'action
 		playButton = new Button(p, "Play !", new Callback() {
 			public void run() {
+				// Initialisation du jeu et changement de scène
 				p.getGame().init(p);
 				p.setScene(p.getGame());
 			}
@@ -44,7 +41,11 @@ public class MainMenuScene extends Scene {
 		super.init(p);
 	}
 	
+	/**
+	 * Affichage
+	 */
 	public void draw(Main p) {
+		// Fond d'écran
 		Background.drawAmazingBackground(p);
 		
 		p.stroke(0);
@@ -61,7 +62,9 @@ public class MainMenuScene extends Scene {
 	}
 	
 	
-	
+	/**
+	 * Gestion du redimensionnement
+	 */
 	public void onresize(Main p) {
 		// Calcul de la taille théorique du texte et de la largeur maximale
 		// le texte prendra 80% de la largeur maximum et 20% de la hauteur

@@ -68,6 +68,9 @@ public class ServerSelectScene extends Scene {
 		mainMenu.draw(p);
 	}
 	
+	/**
+	 * Transmission de l'évenement d'appui de touche
+	 */
 	public void onkeytyped(Main p) {
 		// Lors de l'appui d'une touche
 		serverName.onkeytyped(p);
@@ -75,6 +78,9 @@ public class ServerSelectScene extends Scene {
 		serverPort.onkeytyped(p);
 	}
 
+	/**
+	 * Redimensionnement des composants en fonction de la taille de la fenêtre
+	 */
 	public void onresize(Main p) {
 		// Redimensionnement des zones de textes et des boutons
 		// 60% de la largeur, 10% de la hauteur de la fenêtre
@@ -86,7 +92,7 @@ public class ServerSelectScene extends Scene {
 		serverName.setPosition(p.width * 0.2f, p.height * 0.3f);
 		serverPort.setPosition(p.width * 0.2f, p.height * 0.5f);
 		
-		// Puis des boutons
+		// Puis des boutons (28% de la largeur, 10% de la hauteur)
 		accept.setSize(p.width * 0.28f, p.height * 0.1f);
 		mainMenu.setSize(p.width * 0.28f, p.height * 0.1f);
 		
@@ -94,6 +100,9 @@ public class ServerSelectScene extends Scene {
 		accept.setPosition(p.width * 0.52f, p.height * 0.8f);
 	}
 	
+	/**
+	 * Transmission du clic aux composants
+	 */
 	public void onclick(Main p) {
 		// On transmet le clic aux composants
 		mainMenu.onclick(p);
@@ -103,9 +112,12 @@ public class ServerSelectScene extends Scene {
 		serverName.onclick(p);
 		serverPort.onclick(p);
 	}
+
 	
+	/**
+	 * Transmission du déplacement de la souris aux composants
+	 */
 	public void onmousemove(Main p) {
-		// On transmet l'événement aux composants
 		mainMenu.onmousemove(p);
 		accept.onmousemove(p);
 		

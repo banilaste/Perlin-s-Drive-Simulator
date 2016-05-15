@@ -13,11 +13,6 @@ public class GameOverScene extends Scene {
 	private String titleText = "GAME OVER";
 
 	public void draw(Main p) {
-		if (!initialized) {
-			onresize(p);
-			initialized = true;
-		}
-
 		p.background(0);
 		
 		// On se contente d'afficher le texte au center de l'écran à sa taille

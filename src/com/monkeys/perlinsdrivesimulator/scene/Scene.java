@@ -11,7 +11,6 @@ import com.monkeys.perlinsdrivesimulator.Main;
  *
  */
 public class Scene {
-	protected boolean initialized = false;
 	
 	public Scene() {}
 	
@@ -20,12 +19,10 @@ public class Scene {
 	}
 	
 	/**
-	 * Initialise la scène
+	 * Initialisation la scène
 	 * @param p Object Main
 	 */
-	public void init(Main p) {
-		initialized = true;
-	}
+	public void init(Main p) {}
 	
 	/**
 	 * Affiche la scène

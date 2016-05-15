@@ -6,15 +6,21 @@ import com.monkeys.perlinsdrivesimulator.container.PointsResult;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
+/**
+ * Classe de gestion du sol
+ * @author Banilaste
+ *
+ */
 public class Ground {
 	private float firstSection[], secondSection[];
 	private int pointDistance, maxPoint, section, offsetX, sectionHeight, color, color2;
 
 	public Ground(Main p) {
+		// Création des sections (100 points par section)
 		firstSection = new float[100];
 		secondSection = new float[100];
 		
-		pointDistance = 20;
+		pointDistance = 20; // Distance entre chaque point
 		onresize(p);
 		sectionHeight = 1000; // Hauteur entre le point le plus haut et le plus bas
 		
@@ -24,7 +30,7 @@ public class Ground {
 		// Décalage depuis le début
 		offsetX = 0;
 
-		// Couleur
+		// Couleurs
 		color = p.color(p.random(255), p.random(255), p.random(255));
 		color2 = p.lerpColor(color, p.color(0), 0.1f);
 		
@@ -33,19 +39,19 @@ public class Ground {
 	}
 
 	/**
-	 * Génère une section de la map
+	 * Génère une section de la map et la seconde selon
 	 * @param p Objet processing
 	 * @param section Numéro de la section à générer
-	 * @param reuse Utilisation des section actuelles ou non?
+	 * @param reUse Utilisation des section actuelles ou non?
 	 */
-	public void generate(PApplet p, int section, boolean reuse) {
+	public void generate(PApplet p, int section, boolean reUse) {
 		// Si la seconde section est déja générée
-		if (reuse && section - 1 == this.section) {
+		if (reUse && section == this.section + 1) {
 			firstSection = secondSection;
 			secondSection = generateSingle(p, section + 1);
 			
 		// Sinon si la première l'est
-		} else if (reuse && section == this.section - 1) {
+		} else if (reUse && section + 1 == this.section) {
 			secondSection = firstSection;
 			firstSection = generateSingle(p, section);
 			
@@ -56,6 +62,12 @@ public class Ground {
 		}
 	}
 
+	/**
+	 * Génère une seule section
+	 * @param p
+	 * @param section Numéro de section
+	 * @return
+	 */
 	private float[] generateSingle(PApplet p, int section) {
 		float[] sectionPoints = new float[firstSection.length];
 		
@@ -66,11 +78,14 @@ public class Ground {
 		return sectionPoints;
 	}
 	
+	/**
+	 * Affichage du sol
+	 */
 	public void draw (Main p) {
 		int startX = (int) (p.getGame().getPlayer().getPosition().x - p.width * 3/10 - offsetX),
 			startPoint = startX / pointDistance - 1;
 
-		// Si la première partie de points est dépassée
+		// Si la première partie de points est dépassée, on génère la suivante
 		if (startPoint > firstSection.length){
 			System.out.println("Generating section " + (section + 1));
 			
@@ -82,7 +97,7 @@ public class Ground {
 			
 			section += 1;
 			
-		// Si la première partie est trop à droite
+		// Si la première partie est trop à droite, on revient à la première
 		} else if (startPoint < 0) {
 			System.out.println("Generating section " + (section - 1));
 			
@@ -101,7 +116,7 @@ public class Ground {
 		p.pushMatrix();
 		p.translate(offsetX, 0);
 		
-		// Styles
+		// Définition des styles
 		p.stroke(color2);
 		p.fill(color);
 		p.strokeWeight(3);
@@ -123,10 +138,19 @@ public class Ground {
 		p.popMatrix();
 	}
 	
+	/**
+	 * Gestion du redimensionnement (changement du nombre de points maximum affichables
+	 * @param p
+	 */
 	public void onresize(Main p) {
 		maxPoint = (int) (Math.ceil(p.width / pointDistance) + 3);
 	}
 	
+	/**
+	 * Récupère la hauteur d'un point en valeur absolue
+	 * @param index Numéro du point
+	 * @return
+	 */
 	private float getAbsoluteValueFromIndex(int index) {
 		if (index < 0 || index >= this.firstSection.length + this.secondSection.length) {
 			return 0;
@@ -142,6 +166,11 @@ public class Ground {
 		return 0;
 	}
 	
+	/**
+	 * Récupère la position d'un point en pixel selon son index
+	 * @param index
+	 * @return
+	 */
 	public float getPositionFromIndex(int index) {
 		return index * pointDistance + offsetX;
 	}

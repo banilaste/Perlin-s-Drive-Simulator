@@ -11,6 +11,11 @@ import java.util.Map;
 
 import com.monkeys.perlinsdrivesimulator.Main;
 
+/**
+ * Classe de gestion de connection distante
+ * @author Banilaste
+ *
+ */
 public class RemoteConnection implements Runnable {
 	private Map<Integer, RemotePlayer> players;
 	private String username, ip;
@@ -24,7 +29,14 @@ public class RemoteConnection implements Runnable {
 	
 	private Main main;
 	
-	// Initialisation d'un nouveau client
+	/**
+	 * Initialisation d'un nouveau client
+	 * @param ip IP du serveur
+	 * @param port Port du serveur
+	 * @param name Nom d'utilisateur
+	 * @param m
+	 * @throws IOException
+	 */
 	public RemoteConnection (String ip, int port, String name, Main m) throws IOException {
 		this.ip = ip;
 		this.port = port;
@@ -37,7 +49,9 @@ public class RemoteConnection implements Runnable {
 		thread.start();
 	}
 	
-	// Fonction du processuss
+	/**
+	 * Boucle de réception
+	 */
 	public void run() {
 		String nextLine, data;
 		int playerId, startData, reqType;
@@ -47,6 +61,7 @@ public class RemoteConnection implements Runnable {
 			init();
 			
 			while(true) {
+				// Récupération d'une ligne (= 1 requête)
 				nextLine = reader.readLine();
 
 				// Le premier caractère représente le nombre de caractère de l'id (1 pour un id entre 0 et 9...)
@@ -60,18 +75,18 @@ public class RemoteConnection implements Runnable {
 				data = nextLine.substring(startData + 1);
 				
 				// On envoie ensuite à l'instance locale concernée
-				if (reqType == RequestType.SEED.id) {
+				if (reqType == RequestType.SEED.id) { // Envoi de SEED
 					main.noiseSeed(Long.parseLong(data));
 					main.getGame().getGround().generate(main, main.getGame().getGround().getSection(), false);
 					
-				} else if (reqType == RequestType.WHO_IS.id) {
+				} else if (reqType == RequestType.WHO_IS.id) { // Demande de nom
 					send(RequestType.I_AM, username);
 					
-				} else if (players.containsKey(playerId)) {
+				} else if (players.containsKey(playerId)) { // Gestion spécifique d'un joueur déjà existant
 					players.get(playerId).request(reqType, data);
 					
-				} else {
-					// Request() renvoie l'objet que l'on vient de créer (pas de soucis à se faire ;D)
+				} else { // Gestion spécifique d'un joueur non existant
+					// Ajout du nouveau joueur à la liste
 					players.put(playerId, new RemotePlayer(this, playerId).request(reqType, data));
 				}
 			}
@@ -80,6 +95,11 @@ public class RemoteConnection implements Runnable {
 		}
 	}
 
+	/**
+	 * Initialise les flux d'entrée/sortie
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
 	private void init() throws UnknownHostException, IOException {
 		soc = new Socket(ip, port);
 		
@@ -92,7 +112,7 @@ public class RemoteConnection implements Runnable {
 	
 	/**
 	 * Envoie une requète au serveur (pour envoyer ou demander des infos)
-	 * Note : les requète PONG_* ne peuvent être envoyées
+	 * Note : les requète PONG_* ne devraient pas être envoyées
 	 */
 	public void send(RequestType type, String data) {
 		
@@ -106,6 +126,9 @@ public class RemoteConnection implements Runnable {
 		writer.flush();
 	}
 	
+	/*
+	 * Getters / Setters
+	 */
 	public Map<Integer, RemotePlayer> getPlayers() {
 		return players;
 	}

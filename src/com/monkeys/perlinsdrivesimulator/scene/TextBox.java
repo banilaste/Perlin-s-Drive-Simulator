@@ -5,6 +5,11 @@ import com.monkeys.perlinsdrivesimulator.Main;
 import processing.core.PConstants;
 import processing.core.PVector;
 
+/**
+ * Zone de texte (composant graphique)
+ * @author Banilaste
+ *
+ */
 public class TextBox extends FocusableElement {
 	protected PVector position, size;
 	protected String text = "", emptyText = "Enter somthing :D";
@@ -56,21 +61,28 @@ public class TextBox extends FocusableElement {
 		}
 	}
 	
+	/**
+	 * Lors de l'appui sur une touche
+	 */
 	public void onkeytyped(Main p) {
 		if (!hasFocus) return;
 		
+		// Retour arrière -> suppression d'un caractère
 		if (p.keyCode == PConstants.BACKSPACE) {
 			if (text.length() == 0) return;
 			
 			text = text.substring(0, text.length() - 1);
-		} else if (p.key == PConstants.TAB) {
+		} else if (p.key == PConstants.TAB) { // Tab -> On passe à l'élément suivant
 			focusNext();
-		} else if (p.key != PConstants.CODED) {
+			
+		} else if (p.key != PConstants.CODED) { // Sinon si la touche est affichable -> Ajout à la chaine
 			text += p.key;
 		}
 	}
 	
-	
+	/**
+	 * Renvoie vrai si le point indiqué se trouve dans le rectangle formé par la zone de texte
+	 */
 	public boolean isPointIn(float x, float y) {
 		// Vérificaition du clic pour x
 		if (x < position.x || x > position.x + size.x)

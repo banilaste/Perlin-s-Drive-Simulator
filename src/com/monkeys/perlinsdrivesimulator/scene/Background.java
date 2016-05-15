@@ -6,6 +6,10 @@ import processing.core.PConstants;
 public class Background {
 	private static float angle = 0, size, stripNumber, stripAngle, rotationSpeed = 0.001f;
 	
+	/**
+	 * Dessin du fond d'écran
+	 * @param p
+	 */
 	public static void drawAmazingBackground(PApplet p) {
 		angle += rotationSpeed;
 		
@@ -33,12 +37,21 @@ public class Background {
 		p.popMatrix();
 	}
 	
+	/**
+	 * Change les paramètres du fond d'écran
+	 * @param stripNb Nombre de bandes
+	 * @param rotationalSpeed Vitesse de rotation
+	 */
 	public static void changeBackgroundSettings(int stripNb, float rotationalSpeed) {
 		stripNumber = stripNb;
 		stripAngle = PConstants.TWO_PI / stripNumber;
 		rotationSpeed = rotationalSpeed;
 	}
 	
+	/**
+	 * Gestion du redimensionnement de la fenêtre
+	 * @param p
+	 */
 	public static void onWindowResized(PApplet p) {
 		// Gestion de la taille maximale d'une bande
 		size = Math.max(p.width, p.height);

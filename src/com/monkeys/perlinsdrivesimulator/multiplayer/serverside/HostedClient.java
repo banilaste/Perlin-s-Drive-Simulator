@@ -9,6 +9,11 @@ import java.util.HashMap;
 
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RequestType;
 
+/**
+ * Classe de gestion d'un client du serveur
+ * @author Banilaste
+ *
+ */
 public class HostedClient implements Runnable {
 	private static HashMap<Integer, HostedClient> clients = new HashMap<Integer, HostedClient>();
 	private static int currentId = 0;
@@ -22,7 +27,11 @@ public class HostedClient implements Runnable {
 	private PrintWriter writer;
 	private int id;
 	
-	// Initialisation d'un nouveau client
+	/**
+	 * Initialisation d'un nouveau client
+	 * @param soc Connection active
+	 * @throws IOException
+	 */
 	public HostedClient (Socket soc) throws IOException {
 		this.soc = soc;
 		
@@ -39,18 +48,21 @@ public class HostedClient implements Runnable {
 		clients.put(id, this);
 	}
 
-	// Fonctionnement du thread
+	/**
+	 * Fonctionnement du thread
+	 */
 	public void run() {
 		// Envoie de la seed au client
 		this.sendFrom(id, RequestType.SEED.getRequest("" + seed));
 		
 		while (true) {
 			try {
+				// Récupération d'une ligne (= 1 requête)
 				String data = reader.readLine();
 				RequestType type = RequestType.getFromString(data);
 				boolean cancelBroadcast = false;
 				
-				// Debug
+				// Debug (affichage des requêtes
 				if (type != RequestType.POSITION) {
 					System.out.println("Received from " + id + ": " + data.substring(1) + " (" + type.toString() + ")");
 				}
@@ -59,12 +71,17 @@ public class HostedClient implements Runnable {
 				if (type == RequestType.I_AM) {
 					username = data.substring(1);
 				
-				} else if (type == RequestType.PING) {
+				} else if (type == RequestType.PING) { // Si c'est un ping
 					int id = Integer.parseInt(data.substring(1));
 					
+					// On envoie l'état du client selon son état de connection
 					if (clients.containsKey(id) && clients.get(id).isAlive()) {
 						sendFrom(id, RequestType.PONG_ALIVE.getRequest(id + ""));
+					} else {
+						sendFrom(id, RequestType.PONG_DEAD.getRequest(id + ""));
 					}
+					
+					cancelBroadcast = true;
 				
 				// Si c'est une demande de nom
 				} else if (type == RequestType.WHO_IS) {
@@ -72,6 +89,7 @@ public class HostedClient implements Runnable {
 					
 					// Si le client a déja indiqué son nom, on n'envoie pas de broadcast
 					if (clients.containsKey(userId) && clients.get(userId).getUsername() != null) {
+						// Envoi du nom d'utilisateur
 						sendFrom(userId, clients.get(userId).getUsername());
 						cancelBroadcast = true;
 					}
@@ -83,11 +101,12 @@ public class HostedClient implements Runnable {
 				}
 				
 			} catch (IOException e) {
-				// Envoi d'un pong de déconnection aux clients
+				// Envoi d'un pong de déconnection aux autres clients
 				System.err.println("IO error with client " + id + ", disconnecting.");
 				sendBroadcast(RequestType.PONG_DEAD.id + "");
 				disconnect();
 				
+				// Suppression de la liste
 				clients.remove(id);
 				break;
 			}
@@ -96,6 +115,10 @@ public class HostedClient implements Runnable {
 		clients.remove(this);
 	}
 	
+	/**
+	 * Envoi un message à tous les autres clients
+	 * @param message
+	 */
 	private void sendBroadcast(String message) {
 		for (HostedClient client : clients.values()) {
 			// On envoie le nombre de lettre que prend l'id (log10), l'id, et la donnée transmise
@@ -106,6 +129,9 @@ public class HostedClient implements Runnable {
 		}
 	}
 	
+	/**
+	 * Ferme les flux d'entrée/sortie
+	 */
 	public void disconnect() {
 		try {
 			writer.close();
@@ -116,6 +142,11 @@ public class HostedClient implements Runnable {
 		}
 	}
 	
+	/**
+	 * Envoi d'un message au client depuis un autre client spécifié
+	 * @param id ID de la source
+	 * @param data Message
+	 */
 	public void sendFrom(int id, String data) {
 		// Si aucune fin de ligne n'est spécifiée
 		if (data.lastIndexOf("\n") != data.length() - 1) {
@@ -126,6 +157,9 @@ public class HostedClient implements Runnable {
 		writer.flush();
 	}
 	
+	/*
+	 * Getters / Setters
+	 */
 	public boolean isAlive() {
 		return soc.isConnected();
 	}

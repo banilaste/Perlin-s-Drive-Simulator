@@ -7,6 +7,11 @@ import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemoteConnection
 import com.monkeys.perlinsdrivesimulator.multiplayer.clientside.RemotePlayer;
 import com.monkeys.perlinsdrivesimulator.scene.Scene;
 
+/**
+ * Scène de jeu principale
+ * @author Banilaste
+ *
+ */
 public class GameScene extends Scene {
 	private Ground ground;
 	private Player player;
@@ -20,6 +25,9 @@ public class GameScene extends Scene {
 		super(main);
 	}
 
+	/**
+	 * Initialisation
+	 */
 	public void init(Main p) {
 		ground = new Ground(p);
 		player = new Player(p);
@@ -35,6 +43,9 @@ public class GameScene extends Scene {
 		super.init(p);
 	}
 	
+	/**
+	 * Affichage
+	 */
 	public void draw(Main p) {
 		p.background(0);
 		
@@ -65,6 +76,9 @@ public class GameScene extends Scene {
 		ground.draw(p);
 	}
 	
+	/**
+	 * Gestion du redimensionnement
+	 */
 	public void onresize(Main p) {
 		ground.onresize(p);
 	}
@@ -91,6 +105,9 @@ public class GameScene extends Scene {
 		multiplayerEnabled = true;
 	}
 	
+	/**
+	 * Désactivation du multijoueur
+	 */
 	public void disableMultiplayer() {
 		if (!multiplayerEnabled) return;
 		

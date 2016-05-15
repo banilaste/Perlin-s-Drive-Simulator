@@ -7,6 +7,11 @@ import com.monkeys.perlinsdrivesimulator.container.PointsResult;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+/**
+ * Classe de gestion des roues
+ * @author Banilaste
+ *
+ */
 public class Wheel {
 	private int diameter; 
 	private RelativePosition relativePosition;
@@ -18,6 +23,11 @@ public class Wheel {
 		this.parent = parent;
 	}
 	
+	/**
+	 * Mise à jour de la vitesse de la voiture (parent) en fonction de la position des roues
+	 * -> Gestion des collisions
+	 * @param p
+	 */
 	public void update(Main p) {
 		PVector gravityCenter = relativePosition.getGravityCenterLocation(parent.width, parent.height, parent.angle);
 		
@@ -61,9 +71,13 @@ public class Wheel {
 		}
 	}
 	
+	/**
+	 * Affichage des roues
+	 * @param p
+	 */
 	public void draw (PApplet p){
 		p.fill(145, 226, 50);
 		p.noStroke();
-		p.ellipse(relativePosition.getRelativeX(parent.getWidth()), relativePosition.getRelativeY(parent.getHeight()), diameter, diameter);
+		p.ellipse(relativePosition.x * parent.getWidth(), relativePosition.y * parent.getHeight(), diameter, diameter);
 	}
 }

@@ -5,6 +5,11 @@ import com.monkeys.perlinsdrivesimulator.scene.Scene;
 
 import processing.core.PVector;
 
+/**
+ * Classe de gestion des barres de progression
+ * @author Banilaste
+ *
+ */
 public class ProgressBar extends Scene {
 	private float level, max;
 	private PVector pos, size;
@@ -20,6 +25,9 @@ public class ProgressBar extends Scene {
 		size = new PVector();
 	}
 	
+	/**
+	 * Affichage de la barre de progression
+	 */
 	public void draw(Main p) {
 		// Dessin du rectangle de fond
 		p.fill(60);
@@ -32,7 +40,7 @@ public class ProgressBar extends Scene {
 		
 		p.rect(pos.x + margin, pos.y + margin, (size.x - margin * 2) * level, size.y - margin * 2);
 		
-		// Et enfin du texte
+		// Et enfin du texte (on remplace {} par la valeur en % de la barre)
 		String caption = label.replace("{}", "" + Math.round(level * 100));
 		
 		p.fill(255);
@@ -53,8 +61,11 @@ public class ProgressBar extends Scene {
 		p.popMatrix();
 	}
 	
+	/*
+	 * Getters / Setters
+	 */
 	public ProgressBar setValue(float value) {
-		level = value / max;
+		level = value / max; // Valeur relative (en %)
 		return this;
 	}
 	

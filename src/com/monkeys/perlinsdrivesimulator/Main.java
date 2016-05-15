@@ -10,6 +10,11 @@ import com.monkeys.perlinsdrivesimulator.scene.game.GameScene;
 
 import processing.core.PApplet;
 
+/**
+ * Classe principale
+ * @author Banilaste
+ *
+ */
 public class Main extends PApplet {
 	private Scene currentScene;
 	private KeyListener keys;
@@ -20,11 +25,17 @@ public class Main extends PApplet {
 	private ServerSelectScene serverSelect;
 	private GameOverScene gameOver;
 	
+	/**
+	 * Paramêtres
+	 */
 	public void settings() {
 		size(800, 600);
 		lastWidth = 800;
 	}
 
+	/**
+	 * Initilisation
+	 */
 	public void setup() {
 		// Redimensionnement
 		surface.setResizable(true);
@@ -46,6 +57,9 @@ public class Main extends PApplet {
 		Background.onWindowResized(this);
 	}
 
+	/**
+	 * Affichage
+	 */
 	public void draw() {
 		// Gestion du redimensionnement
 		if (lastWidth != width) {
@@ -94,7 +108,6 @@ public class Main extends PApplet {
 	/*
 	 * Gestion des touches
 	 */
-
 	public void keyReleased() {
 		keys.onKeyReleased(this);
 	}

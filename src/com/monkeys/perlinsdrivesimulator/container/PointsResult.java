@@ -1,8 +1,13 @@
 package com.monkeys.perlinsdrivesimulator.container;
 
+/**
+ * Résulatats d'une demande de points du sol
+ * @author Banilaste
+ *
+ */
 public class PointsResult {
-	public float points[];
-	public int index;
+	public float points[]; // Liste des points
+	public int index; // Index de départ
 	
 	public PointsResult() {}
 	

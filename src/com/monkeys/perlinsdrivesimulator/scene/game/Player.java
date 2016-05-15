@@ -30,7 +30,11 @@ public class Player {
 		fuelLevel = 1;
 	}
 	
+	/**
+	 * Mise à jour des positions et de la vitesse du joueur
+	 */
 	public void update (Main p){
+		// Gestion des touches
 		// Droite (la vitesse ajoutée dépend du réservoir : 40% à 0 et 100% à 1)
 		if (p.getKeyListener().right) {
 			speed.x += 0.8f * fuelLevel + 0.2f;
@@ -41,10 +45,11 @@ public class Player {
 			speed.x -= 0.8f * fuelLevel + 0.2f;
 		}
 		
-		// Gravité et dépense en carburant
+		// Gestion de la gravité et dépense en carburant
 		speed.y += 0.2;
 		fuelLevel -= 0.00005f;
 		
+		// Fin du jeu si plus de fuel
 		if (fuelLevel <= 0) {
 			p.setScene(p.getGameOver());
 			fuelLevel = 0;
@@ -53,7 +58,8 @@ public class Player {
 		// Limite de vitesse
 		speed.x = PApplet.constrain(speed.x, -5, 5);
 		speed.y = PApplet.constrain(speed.y, -5, 5);
-
+		
+		// Position prévue
 		plannedPosition = position.copy().add(speed);
 		
 		// Mise à jour de la position des roues (on alterne
@@ -63,6 +69,7 @@ public class Player {
 		wheels[alternate].update(p);
 		wheels[1 - alternate].update(p);
 		
+		// Ajout des vitesses aux positions
 		position.add(speed);
 		angle += rotationSpeed / 2;
 		rotationSpeed *= 0.95;
@@ -99,6 +106,10 @@ public class Player {
 		p.popMatrix();
 	}
 	
+	/**
+	 * Envoi de la vitesse au serveur multijoueur
+	 * @param connection
+	 */
 	public void sendPositionUpdate(RemoteConnection connection) {
 		// On envoie la vitesse également pour permettre de donner un semblant de fluidité aux mises à jour
 		connection.send(RequestType.POSITION,
@@ -106,7 +117,9 @@ public class Player {
 		);
 	}
 
-	// Getters/setters
+	/*
+	 * Getters/setters
+	 */
 	public PVector getPosition() {
 		return position;
 	}
